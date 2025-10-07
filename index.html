@@ -1,231 +1,649 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOS Mechanics - Mobile Car Services Medway</title>
-<meta name="description" content="Book high-quality mobile car services in Medway, Chatham, Rochester, Strood & Gillingham. Customize your service plan and get a full quote instantly.">
-<meta name="keywords" content="Mobile Mechanic, Car Service, Medway, Chatham, Rochester, Strood, Gillingham, Full Service, Oil & Filter, Brake Check">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SOS Mechanics — Service Builder</title>
+<meta name="description" content="SOS Mechanics — Mobile mechanic. Build your service plan, book, and get instant confirmation." />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin:0; padding:0; font-family: 'Inter', sans-serif; }
-  body { background: #e0f7fa; color: #004d40; }
-  .glass-card { background: rgba(0, 150, 136, 0.2); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); padding: 20px; margin: 15px; transition: transform 0.3s, box-shadow 0.3s; cursor:pointer; }
-  .glass-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.25); }
-  h1,h2,h3 { color:#004d40; }
-  button { cursor:pointer; border:none; border-radius:10px; padding:12px 20px; font-weight:600; transition:0.3s; }
-  .btn-primary { background: linear-gradient(135deg, #00bfa5, #26a69a); color:white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-  .btn-primary:hover { transform: scale(1.05); }
-  .btn-emergency { background: linear-gradient(135deg, #ff7043, #ff5722); color:white; font-weight:bold; animation: pulse 1.5s infinite; }
-  @keyframes pulse { 0% {box-shadow:0 0 0 0 rgba(255,87,34,0.7);} 70% {box-shadow:0 0 0 10px rgba(255,87,34,0);} 100% {box-shadow:0 0 0 0 rgba(255,87,34,0);} }
-  .services-section { display:flex; flex-wrap:wrap; justify-content:center; margin:30px 10px; }
-  .service-items { display:none; margin-top:10px; }
-  .service-items li { margin:5px 0; }
-  #cartBtn, #emergencyBtn { position:fixed; bottom:20px; padding:15px 20px; z-index:1000; }
-  #cartBtn { right:20px; background:#00bfa5; color:white; border-radius:10px; }
-  #emergencyBtn { left:20px; background:#ff5722; color:white; border-radius:10px; }
-  #cartOverlay { position:fixed; bottom:70px; right:20px; width:300px; max-height:400px; overflow-y:auto; background:rgba(0,150,136,0.25); backdrop-filter: blur(10px); padding:15px; border-radius:15px; display:none; z-index:1000; }
-  .progress-bar { width:100%; height:10px; background:#b2dfdb; border-radius:5px; margin:20px 0; overflow:hidden; }
-  .progress { height:100%; width:0%; background:#00bfa5; transition:width 0.3s; }
-  #ticket { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background: rgba(0,191,165,0.3); backdrop-filter:blur(15px); padding:25px; border-radius:15px; z-index:2000; width:90%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.3); }
-  #ticket h2 { text-align:center; }
-  #ticket ul { margin:15px 0; }
-  .ticket-actions { display:flex; justify-content:space-between; margin-top:15px; }
-  .form-section { margin:20px 10px; display:flex; flex-direction:column; gap:15px; }
-  input, select { padding:10px; border-radius:10px; border:none; background: rgba(0,191,165,0.2); color:#004d40; }
-  footer { margin-top:50px; padding:20px; text-align:center; background: rgba(0,191,165,0.15); backdrop-filter: blur(10px); border-radius:15px; color:#004d40; }
-  @media(max-width:768px){ .services-section { flex-direction:column; align-items:center; } #cartOverlay { width:90%; bottom:80px; } }
+  :root{
+    --teal-1:#00bfa5;
+    --teal-2:#26a69a;
+    --aqua-glass: rgba(0,191,165,0.18);
+    --accent:#ff7043;
+    --bg:#e8fbfb;
+    --text:#053936;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+  header{padding:18px 20px;display:flex;align-items:center;justify-content:space-between}
+  header h1{font-size:1.1rem;margin:0;color:var(--text)}
+  /* Buttons fixed */
+  #emergencyBtn{
+    position:fixed;top:16px;left:16px;z-index:1200;
+    background:linear-gradient(135deg,var(--accent),#ff5722);color:#fff;border:none;padding:10px 14px;border-radius:10px;font-weight:700;
+    box-shadow:0 6px 18px rgba(255,87,34,0.18);cursor:pointer;animation:emPulse 1.6s infinite;
+  }
+  @keyframes emPulse{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+  #cartBtn{
+    position:fixed;right:16px;bottom:16px;z-index:1200;
+    background:linear-gradient(135deg,var(--teal-1),var(--teal-2));color:#fff;border:none;padding:12px 16px;border-radius:10px;font-weight:700;
+    box-shadow:0 6px 18px rgba(0,191,165,0.18);cursor:pointer;
+  }
+
+  /* Hero */
+  .hero{padding:36px 20px;text-align:center}
+  .hero .card{max-width:980px;margin:0 auto;padding:26px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));backdrop-filter:blur(8px);box-shadow:0 8px 28px rgba(0,0,0,0.08)}
+  .hero h2{margin:0 0 8px 0;font-size:1.8rem;color:var(--text)}
+  .hero p{margin:0 0 16px;color:#0b3d36}
+  .btn-start{background:linear-gradient(135deg,var(--teal-1),var(--teal-2));color:#fff;padding:12px 20px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+
+  /* Layout */
+  main{max-width:1100px;margin:20px auto;padding:0 18px}
+  .steps{display:flex;gap:12px;align-items:center;justify-content:center;margin:10px 0 24px}
+  .step-pill{padding:8px 14px;border-radius:20px;background:#ffffff;box-shadow:0 6px 18px rgba(0,0,0,0.06);font-weight:700;color:var(--text)}
+  /* Grid of services */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .service-card{
+    border-radius:14px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+    backdrop-filter:blur(8px);box-shadow:0 8px 22px rgba(0,0,0,0.08);cursor:pointer;position:relative;transition:transform .22s,box-shadow .22s;
+  }
+  .service-card:hover{transform:translateY(-6px);box-shadow:0 16px 32px rgba(0,0,0,0.12)}
+  .service-card h3{margin:0 0 6px}
+  .service-meta{color:#034a42;font-weight:700;margin-top:8px}
+  .service-items{margin-top:10px;padding-left:16px;display:none}
+  .service-items li{margin:6px 0;color:#033b34}
+
+  /* Add-ons area hidden until base selected */
+  #addonsWrap{display:none;margin-top:18px}
+
+  /* Cart overlay */
+  #cartOverlay{
+    position:fixed;right:16px;bottom:72px;width:320px;max-height:420px;overflow:auto;display:none;padding:12px;border-radius:12px;
+    background:var(--aqua-glass);backdrop-filter:blur(10px);box-shadow:0 12px 32px rgba(0,0,0,0.12);z-index:1150;
+  }
+  #cartOverlay h4{margin:6px 0 10px;font-size:1rem}
+  .cart-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+  .cart-row .rm{background:#ff6b6b;border:none;color:white;padding:4px 8px;border-radius:8px;cursor:pointer}
+
+  /* Form */
+  .form-card{margin-top:22px;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));backdrop-filter:blur(6px);box-shadow:0 8px 20px rgba(0,0,0,0.06)}
+  .form-card label{display:block;margin:8px 0 6px;font-weight:700}
+  .form-card input, .form-card select, .form-card textarea{
+    width:100%;padding:10px;border-radius:8px;border:none;background:rgba(255,255,255,0.12);color:var(--text);outline:none;
+  }
+  .form-row{display:flex;gap:12px}
+  .form-row > *{flex:1}
+
+  /* Ticket glass style */
+  #ticket{
+    position:fixed;left:50%;top:10%;transform:translateX(-50%);width:92%;max-width:420px;z-index:1250;
+    background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+    backdrop-filter:blur(12px);padding:18px;border-radius:14px;box-shadow:0 18px 38px rgba(0,0,0,0.2);display:none;
+  }
+  .ticket-header{display:flex;justify-content:space-between;align-items:center}
+  .glass-btn{
+    background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.18);color:white;padding:8px 12px;border-radius:12px;cursor:pointer;font-weight:700;
+    backdrop-filter:blur(8px);
+  }
+  .glass-btn.primary{background:linear-gradient(135deg,var(--teal-1),var(--teal-2));color:#fff}
+  /* small responsive tweaks */
+  @media(max-width:640px){
+    #cartOverlay{right:8px;left:8px;width:auto}
+    #emergencyBtn{left:8px}
+    #cartBtn{right:8px}
+    .form-row{flex-direction:column}
+  }
 </style>
 </head>
 <body>
 
-<!-- Hero -->
-<section class="hero glass-card" style="margin:20px; text-align:center;">
+<header>
   <h1>SOS Mechanics</h1>
-  <p>Mobile Car Services in Medway, Chatham, Rochester, Strood & Gillingham</p>
-  <button class="btn-primary" id="startBuilder">Build Your Service Plan</button>
-</section>
+  <div style="font-size:.9rem;color:#044b43">Mobile repairs — Medway, Chatham, Rochester, Strood &amp; Gillingham</div>
+</header>
 
-<!-- Emergency & Cart buttons -->
-<button id="emergencyBtn" class="btn-emergency">Emergency</button>
-<button id="cartBtn">My Service Plan - £0.00</button>
+<!-- Fixed Action Buttons -->
+<button id="emergencyBtn" aria-label="Emergency call">⚠️ Emergency</button>
+<button id="cartBtn" aria-label="My Service Plan">My Service Plan - £0.00</button>
 
-<!-- Cart Overlay -->
-<div id="cartOverlay">
-  <h3>Service Plan</h3>
-  <ul id="cartItems"></ul>
-  <strong>Total: £<span id="cartTotal">0.00</span></strong>
+<main>
+  <section class="hero" style="padding:18px 20px">
+    <div class="card" style="max-width:980px;margin:0 auto;padding:18px;border-radius:14px;background:var(--aqua-glass);backdrop-filter:blur(8px)">
+      <h2 style="margin:0 0 6px">Build your service plan</h2>
+      <p style="margin:0 0 12px">Pick a base service (only one), then add extras. Prices update live. When ready, choose time &amp; enter details.</p>
+      <button id="startBtn" class="btn-start">Start</button>
+    </div>
+  </section>
+
+  <!-- Steps indicator -->
+  <div class="steps" aria-hidden="false">
+    <div class="step-pill" id="stepIndicator">Step 1 of 4 — Choose Base</div>
+  </div>
+
+  <!-- Step 1: Base services -->
+  <section id="step1">
+    <div style="padding:0 6px">
+      <h3 style="margin-bottom:8px">Base packages (click to expand details — oil & filter included with every package)</h3>
+      <div class="grid services-section" id="baseGrid">
+        <!-- cards inserted by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Add-ons (hidden until base selected) -->
+  <section id="addonsWrap" style="padding-top:18px">
+    <h3 style="margin:6px 0 8px">Featured Add-ons</h3>
+    <div class="grid" id="featuredGrid"></div>
+    <h3 style="margin:14px 0 8px">More Add-ons</h3>
+    <div class="grid" id="regularGrid"></div>
+  </section>
+
+  <!-- Step 2: Date/Time -->
+  <section id="step2" style="display:none;margin-top:18px">
+    <div class="form-card">
+      <h3>Step 2 — Choose date &amp; time</h3>
+      <p style="margin:0 0 8px">Operating hours: 08:00 — 18:00. Out-of-hours surcharge will apply if outside.</p>
+      <label for="serviceDate">Preferred date</label>
+      <input id="serviceDate" type="date" />
+      <label for="serviceTime">Preferred time (hour slots)</label>
+      <select id="serviceTime">
+        <option value="9">09:00</option><option value="10">10:00</option><option value="11">11:00</option><option value="12">12:00</option>
+        <option value="13">13:00</option><option value="14">14:00</option><option value="15">15:00</option><option value="16">16:00</option>
+      </select>
+      <div style="margin-top:12px;display:flex;gap:10px">
+        <button id="toStep3" class="btn-primary">Next: Contact</button>
+        <button id="backTo1" class="glass-btn" style="background:#fff">Back</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 3: Contact -->
+  <section id="step3" style="display:none;margin-top:18px">
+    <div class="form-card">
+      <h3>Step 3 — Your details & vehicle</h3>
+      <label for="custName">Full name</label>
+      <input id="custName" type="text" placeholder="John Smith" />
+      <label for="custPhone">Phone</label>
+      <input id="custPhone" type="tel" placeholder="07400 000000" />
+      <div class="form-row">
+        <div>
+          <label for="custVehicle">Vehicle model</label>
+          <input id="custVehicle" type="text" placeholder="Ford Focus" />
+        </div>
+        <div>
+          <label for="custReg">Registration (UK)</label>
+          <input id="custReg" type="text" placeholder="AB12 CDE" />
+        </div>
+      </div>
+      <label for="custNotes">Notes / precise location</label>
+      <textarea id="custNotes" rows="3" placeholder="Optional…"></textarea>
+      <div style="margin-top:12px;display:flex;gap:10px">
+        <button id="toStep4" class="btn-primary">Next: Confirm & Send</button>
+        <button id="backTo2" class="glass-btn">Back</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 4: Confirmation (ticket appears after send) -->
+  <section id="step4" style="display:none;margin-top:18px">
+    <div class="form-card">
+      <h3>Step 4 — Confirm & Send</h3>
+      <div id="confirmSummary" style="margin:8px 0"></div>
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <button id="sendWhatsApp" class="btn-primary">Send to WhatsApp</button>
+        <button id="backTo3" class="glass-btn">Back</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Cart overlay -->
+<div id="cartOverlay" role="region" aria-label="Service Plan">
+  <h4>Your Service Plan</h4>
+  <div id="cartList"></div>
+  <div style="margin-top:8px;font-weight:800">Total: £<span id="cartTotal">0.00</span></div>
 </div>
 
-<!-- Services Section -->
-<section class="services-section" id="baseServices">
-  <div class="service-card" data-name="Basic Service" data-price="100" data-time="1h 25m">
-    <h3>Basic Service – £100</h3>
-    <p>1h 25m</p>
-    <div class="service-items">
-      <ul>
-        <li>Oil & Filter <span class="counter">1</span></li>
-        <li>Brake Check <span class="counter">1</span></li>
-        <li>Fluid Top-Up <span class="counter">1</span></li>
-      </ul>
+<!-- Ticket (glass) -->
+<div id="ticket" role="dialog" aria-modal="true" aria-label="Service booking ticket">
+  <div class="ticket-header">
+    <strong>Service Booking</strong>
+    <div>
+      <button id="downloadTicket" class="glass-btn primary">Download</button>
+      <button id="closeTicket" class="glass-btn">Close</button>
     </div>
   </div>
-  <div class="service-card" data-name="Interim Service" data-price="150" data-time="1h 50m">
-    <h3>Interim Service – £150</h3>
-    <p>1h 50m</p>
-    <div class="service-items">
-      <ul>
-        <li>Oil & Filter <span class="counter">1</span></li>
-        <li>Brake Check <span class="counter">1</span></li>
-        <li>Fluid Top-Up <span class="counter">1</span></li>
-        <li>Air Filter Replacement <span class="counter">1</span></li>
-        <li>Battery Check <span class="counter">1</span></li>
-      </ul>
-    </div>
-  </div>
-  <div class="service-card" data-name="Full Service" data-price="250" data-time="2h 25m">
-    <h3>Full Service – £250</h3>
-    <p>2h 25m</p>
-    <div class="service-items">
-      <ul>
-        <li>Oil & Filter <span class="counter">1</span></li>
-        <li>Brake Check <span class="counter">1</span></li>
-        <li>Fluid Top-Up <span class="counter">1</span></li>
-        <li>Tyre Inspection <span class="counter">1</span></li>
-        <li>Battery Check <span class="counter">1</span></li>
-        <li>Air Filter Replacement <span class="counter">1</span></li>
-        <li>Wiper Blade Replacement <span class="counter">1</span></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- Form Section -->
-<section class="form-section" id="contactForm">
-  <input type="text" id="name" placeholder="Full Name" required>
-  <input type="text" id="phone" placeholder="Phone Number" required>
-  <input type="text" id="vehicle" placeholder="Vehicle Model" required>
-  <input type="text" id="reg" placeholder="Registration Number" required>
-  <input type="datetime-local" id="datetime" required>
-  <textarea id="notes" placeholder="Additional Notes"></textarea>
-  <button class="btn-primary" id="submitWhatsApp">Submit & Send to WhatsApp</button>
-</section>
-
-<!-- Service Booking Ticket -->
-<div id="ticket">
-  <h2>Service Booking</h2>
-  <p id="ticketName"></p>
-  <p id="ticketReg"></p>
-  <ul id="ticketItems"></ul>
-  <p><strong>Total: £<span id="ticketTotal">0.00</span></strong></p>
-  <div class="ticket-actions">
-    <button id="downloadTicket" class="btn-primary">Download</button>
-    <button id="closeTicket" class="btn-primary">Close</button>
+  <div id="ticketBody" style="margin-top:12px">
+    <!-- populated -->
   </div>
 </div>
 
-<!-- Footer -->
-<footer>
-  <p>&copy; <span id="year"></span> SOS Mechanics | Mobile Car Services Medway, Chatham, Rochester, Strood & Gillingham</p>
-  <p><a href="tel:07405937104">Call +44 7405 937104</a></p>
-</footer>
-
+<!-- libraries -->
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-<script>
-  document.getElementById('year').textContent = new Date().getFullYear();
-
-  const servicePlan = [];
-  const cartBtn = document.getElementById('cartBtn');
-  const cartOverlay = document.getElementById('cartOverlay');
-  const cartItems = document.getElementById('cartItems');
-  const cartTotalEl = document.getElementById('cartTotal');
-
-  // Toggle cart
-  cartBtn.addEventListener('click', () => { cartOverlay.style.display = cartOverlay.style.display === 'none' ? 'block' : 'none'; });
-
-  // Toggle service items and add to cart
-  document.querySelectorAll('.service-card').forEach(card => {
-    card.addEventListener('click', () => {
-      // Show/hide items
-      const items = card.querySelector('.service-items');
-      items.style.display = items.style.display === 'none' ? 'block' : 'none';
-
-      // Clear previous selection of base
-      if (!servicePlan.find(s => s.baseSelected)) {
-        const baseService = { name: card.dataset.name, price: parseFloat(card.dataset.price), time: card.dataset.time, baseSelected:true };
-        servicePlan.push(baseService);
-        updateCart();
-        alert(`${baseService.name} added to service plan`);
-      }
-    });
-  });
-
-  function updateCart() {
-    let total = 0;
-    cartItems.innerHTML = '';
-    servicePlan.forEach(item => {
-      total += item.price;
-      const li = document.createElement('li');
-      li.textContent = `${item.name} - £${item.price}`;
-      cartItems.appendChild(li);
-    });
-    cartTotalEl.textContent = total.toFixed(2);
-    cartBtn.textContent = `My Service Plan - £${total.toFixed(2)}`;
-  }
-
-  // WhatsApp Submission
-  document.getElementById('submitWhatsApp').addEventListener('click', () => {
-    const name = document.getElementById('name').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const vehicle = document.getElementById('vehicle').value.trim();
-    const reg = document.getElementById('reg').value.trim();
-    const datetime = document.getElementById('datetime').value;
-    const notes = document.getElementById('notes').value.trim();
-
-    if (!name || !phone || !vehicle || !reg || !datetime) { alert('Please fill all required fields'); return; }
-
-    // Generate ticket
-    document.getElementById('ticketName').textContent = `Name: ${name}`;
-    document.getElementById('ticketReg').textContent = `Reg: ${reg}`;
-    const ticketItems = document.getElementById('ticketItems');
-    ticketItems.innerHTML = '';
-    let total = 0;
-    servicePlan.forEach(item => {
-      const li = document.createElement('li');
-      li.textContent = `${item.name} - £${item.price}`;
-      ticketItems.appendChild(li);
-      total += item.price;
-    });
-    document.getElementById('ticketTotal').textContent = total.toFixed(2);
-
-    // Generate QR code
-    QRCode.toCanvas(document.createElement('canvas'), `SOS Mechanics Booking: ${name} ${reg} Total: £${total}`, function (error, canvas) {
-      if (!error) {
-        ticketItems.appendChild(canvas);
-      }
-    });
-
-    document.getElementById('ticket').style.display = 'block';
-  });
-
-  // Close ticket
-  document.getElementById('closeTicket').addEventListener('click', () => {
-    document.getElementById('ticket').style.display = 'none';
-    servicePlan.length = 0;
-    updateCart();
-    cartOverlay.style.display = 'none';
-  });
-
-  // Download ticket
-  document.getElementById('downloadTicket').addEventListener('click', () => {
-    html2canvas(document.getElementById('ticket')).then(canvas => {
-      const link = document.createElement('a');
-      link.download = 'ServiceBooking.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    });
-  });
-</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+/* -------------------------
+   Data / initial lists
+   ------------------------- */
+const basePackages = [
+  { id:'basic', name:'Basic Service', price:100, time:85, items:['Oil & Filter','Brake Check','Fluid Top-Up'] },
+  { id:'interim', name:'Interim Service', price:150, time:110, items:['Oil & Filter','Brake Check','Fluid Top-Up','Air Filter Replacement','Battery Check'] },
+  { id:'full', name:'Full Service', price:250, time:145, items:['Oil & Filter','Brake Check','Fluid Top-Up','Tyre Inspection','Battery Check','Air Filter Replacement','Wiper Blade Replacement'] }
+];
+const featuredAddons = [
+  { id:'air', name:'Air Filter Replacement', price:30, time:20 },
+  { id:'battery', name:'Battery Check', price:40, time:20 },
+  { id:'brk-fluid', name:'Brake Fluid Flush', price:35, time:25 },
+  { id:'wheel-align', name:'Wheel Alignment', price:60, time:30 }
+];
+const regularAddons = [
+  { id:'wiper', name:'Wiper Replacement', price:15, time:10 },
+  { id:'tyre', name:'Tyre Pressure Check', price:10, time:10 },
+  { id:'coolant', name:'Coolant Top-Up', price:20, time:15 },
+  { id:'spark', name:'Spark Plug Replacement', price:45, time:40 },
+  { id:'trans', name:'Transmission Fluid Check', price:40, time:30 },
+  { id:'diag', name:'Full Diagnostic', price:70, time:45 },
+  { id:'head', name:'Headlight Bulb', price:20, time:15 },
+  { id:'brakepad', name:'Brake Pad Check', price:25, time:20 }
+];
+
+/* -------------------------
+   State
+   ------------------------- */
+let cart = [];            // selected items (base with type 'base', add-ons with type 'addon')
+let selectedBaseId = null;
+
+/* -------------------------
+   DOM refs
+   ------------------------- */
+const baseGrid = document.getElementById('baseGrid');
+const featuredGrid = document.getElementById('featuredGrid');
+const regularGrid = document.getElementById('regularGrid');
+const addonsWrap = document.getElementById('addonsWrap');
+const cartBtn = document.getElementById('cartBtn');
+const cartOverlay = document.getElementById('cartOverlay');
+const cartList = document.getElementById('cartList');
+const cartTotalEl = document.getElementById('cartTotal');
+const ticket = document.getElementById('ticket');
+const ticketBody = document.getElementById('ticketBody');
+const startBtn = document.getElementById('startBtn');
+
+/* -------------------------
+   Helpers
+   ------------------------- */
+function money(n){ return n.toFixed(2); }
+function findInCart(id){ return cart.find(i=>i.id===id); }
+function removeFromCart(id){ cart = cart.filter(i=>i.id!==id); updateCartUI(); }
+function showToast(msg){ /* simple */ alert(msg); }
+
+/* -------------------------
+   Populate UI
+   ------------------------- */
+function createBaseCard(pkg){
+  const card = document.createElement('div');
+  card.className='service-card';
+  card.dataset.id = pkg.id;
+  card.innerHTML = `<h3>${pkg.name} — £${pkg.price}</h3><div class="service-meta">${pkg.time} mins</div>`;
+  const items = document.createElement('div');
+  items.className = 'service-items';
+  const ul = document.createElement('ul');
+  pkg.items.forEach(it => {
+    const li = document.createElement('li'); li.textContent = `${it}  ×1`; ul.appendChild(li);
+  });
+  items.appendChild(ul);
+  card.appendChild(items);
+
+  // Expand toggle + selection behavior
+  card.addEventListener('click', (e)=>{
+    // If click on inner button etc, ignore — but we have none
+    // Toggle expand
+    items.style.display = items.style.display === 'block' ? 'none' : 'block';
+    // Select base: ensure only one base
+    if(selectedBaseId !== pkg.id){
+      // remove existing base from cart
+      cart = cart.filter(it => it.type !== 'base');
+      // add new base
+      cart.unshift({ id: pkg.id, name: pkg.name, price: pkg.price, time: pkg.time, type:'base' });
+      selectedBaseId = pkg.id;
+      // reveal add-ons
+      addonsWrap.style.display = 'block';
+      showToast(`${pkg.name} added to plan`);
+      updateCartUI();
+      // visual selected state
+      document.querySelectorAll('.service-card').forEach(c=>c.style.outline='none');
+      card.style.outline = '3px solid rgba(0,191,165,0.14)';
+      // advance step indicator
+      document.getElementById('stepIndicator').textContent = 'Step 1 of 4 — Base selected';
+      // show step 2 button automatically (user flow)
+      document.getElementById('step2').style.display='block';
+      window.scrollTo({top:document.getElementById('step2').offsetTop-80,behavior:'smooth'});
+    }
+  });
+
+  return card;
+}
+function createAddonCard(addon){
+  const card = document.createElement('div');
+  card.className='service-card';
+  card.dataset.id = addon.id;
+  card.innerHTML = `<h3>${addon.name}</h3><div class="service-meta">£${addon.price} · ${addon.time} mins</div>`;
+  card.addEventListener('click', ()=>{
+    // toggle add-on in cart
+    const exists = findInCart(addon.id);
+    if(!exists){
+      cart.push({ id: addon.id, name: addon.name, price: addon.price, time:addon.time, type:'addon' });
+      card.style.outline = '3px solid rgba(0,191,165,0.14)';
+      showToast(`${addon.name} added`);
+    } else {
+      removeFromCart(addon.id);
+      card.style.outline = 'none';
+      showToast(`${addon.name} removed`);
+    }
+    updateCartUI();
+  });
+  return card;
+}
+
+/* render lists */
+basePackages.forEach(b=>{
+  baseGrid.appendChild(createBaseCard(b));
+});
+featuredAddons.forEach(a=>featuredGrid.appendChild(createAddonCard(a)));
+regularAddons.forEach(a=>regularGrid.appendChild(createAddonCard(a)));
+
+/* -------------------------
+   Cart UI & total
+   ------------------------- */
+function updateCartUI(){
+  cartList.innerHTML='';
+  let total = 0;
+  cart.forEach((it, idx)=>{
+    const row = document.createElement('div');
+    row.className='cart-row';
+    row.innerHTML = `<div>${it.name} <small style="opacity:.8">£${money(it.price)}</small></div><div><button class="rm" data-id="${it.id}">Remove</button></div>`;
+    cartList.appendChild(row);
+    total += it.price;
+  });
+  cartTotalEl.textContent = money(total);
+  cartBtn.textContent = `My Service Plan - £${money(total)}`;
+  // wire remove buttons
+  cartList.querySelectorAll('button.rm').forEach(btn=>{
+    btn.addEventListener('click', ()=> {
+      const id = btn.dataset.id;
+      removeFromCart(id);
+      // also un-outline add-on/ base visual
+      const el = document.querySelector(`[data-id="${id}"]`);
+      if(el) el.style.outline = 'none';
+    });
+  });
+}
+
+/* open/close cart overlay */
+cartBtn.addEventListener('click', ()=>{
+  cartOverlay.style.display = (cartOverlay.style.display==='block') ? 'none' : 'block';
+  cartOverlay.scrollTop = 0;
+});
+
+/* -------------------------
+   Step navigation
+   ------------------------- */
+document.getElementById('startBtn').addEventListener('click', ()=> {
+  // scroll to base selection
+  window.scrollTo({top: document.getElementById('baseGrid').offsetTop - 80, behavior:'smooth'});
+});
+
+/* Step2 controls */
+document.getElementById('toStep3').addEventListener('click', ()=>{
+  // validate date/time chosen
+  const date = document.getElementById('serviceDate').value;
+  const time = document.getElementById('serviceTime').value;
+  if(!date){ alert('Please pick a date'); return; }
+  document.getElementById('step2').style.display='none';
+  document.getElementById('step3').style.display='block';
+  document.getElementById('stepIndicator').textContent = 'Step 3 of 4 — Contact & Vehicle';
+  window.scrollTo({top: document.getElementById('step3').offsetTop - 80, behavior:'smooth'});
+});
+document.getElementById('backTo1').addEventListener('click', ()=>{
+  document.getElementById('step2').style.display='none';
+  document.getElementById('stepIndicator').textContent = 'Step 1 of 4 — Choose Base';
+});
+
+/* Step3 controls */
+document.getElementById('toStep4').addEventListener('click', ()=>{
+  // validate contact fields
+  const n = document.getElementById('custName').value.trim();
+  const p = document.getElementById('custPhone').value.trim();
+  const v = document.getElementById('custVehicle').value.trim();
+  const r = document.getElementById('custReg').value.trim();
+  if(!n || !p || !v || !r){ alert('Please complete name, phone, vehicle and registration'); return; }
+  document.getElementById('step3').style.display='none';
+  document.getElementById('step4').style.display='block';
+  document.getElementById('stepIndicator').textContent = 'Step 4 of 4 — Confirm';
+  buildConfirmSummary();
+  window.scrollTo({top: document.getElementById('step4').offsetTop - 80, behavior:'smooth'});
+});
+document.getElementById('backTo2').addEventListener('click', ()=>{
+  document.getElementById('step3').style.display='none';
+  document.getElementById('step2').style.display='block';
+  document.getElementById('stepIndicator').textContent = 'Step 2 of 4 — Choose Date & Time';
+});
+
+/* Step4 back */
+document.getElementById('backTo3').addEventListener('click', ()=>{
+  document.getElementById('step4').style.display='none';
+  document.getElementById('step3').style.display='block';
+  document.getElementById('stepIndicator').textContent = 'Step 3 of 4 — Contact & Vehicle';
+});
+
+/* -------------------------
+   Confirm summary and send
+   ------------------------- */
+function buildConfirmSummary(){
+  const el = document.getElementById('confirmSummary');
+  if(cart.length===0){ el.innerHTML = '<em>No services selected.</em>'; return; }
+  let total = 0;
+  let html = '<ul>';
+  cart.forEach(it=>{
+    html += `<li>${it.name} — £${money(it.price)}</li>`;
+    total += it.price;
+  });
+  html += '</ul>';
+  const date = document.getElementById('serviceDate').value;
+  const time = document.getElementById('serviceTime').value;
+  html += `<p><strong>Date:</strong> ${date} &nbsp; <strong>Time:</strong> ${time}:00</p>`;
+  html += `<p><strong>Total:</strong> £${money(total)}</p>`;
+  el.innerHTML = html;
+}
+
+/* WhatsApp send -> show ticket */
+document.getElementById('sendWhatsApp').addEventListener('click', ()=>{
+  // validate final and build message
+  if(cart.length===0){ alert('No services selected'); return; }
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const vehicle = document.getElementById('custVehicle').value.trim();
+  const reg = document.getElementById('custReg').value.trim();
+  const date = document.getElementById('serviceDate').value;
+  const time = document.getElementById('serviceTime').value;
+  const notes = document.getElementById('custNotes').value.trim();
+  let total = 0;
+  let itemsText = '';
+  cart.forEach(it => { itemsText += `${it.name} (£${money(it.price)})\n`; total += it.price; });
+
+  const message = `SOS Mechanics Booking:\nName: ${name}\nPhone: ${phone}\nVehicle: ${vehicle}\nReg: ${reg}\nDate/Time: ${date} ${time}:00\nServices:\n${itemsText}Total: £${money(total)}\nNotes: ${notes}`;
+  // open whatsapp
+  window.open(`https://wa.me/447405937104?text=${encodeURIComponent(message)}`,'_blank');
+
+  // populate ticket (hidden until now)
+  const ticketHtml = `<p><strong>Name:</strong> ${name}</p>
+    <p><strong>Vehicle:</strong> ${vehicle}</p>
+    <p><strong>Reg:</strong> ${reg}</p>
+    <p><strong>Date/Time:</strong> ${date} ${time}:00</p>
+    <hr>
+    <ul>${cart.map(it=>`<li>${it.name} — £${money(it.price)}</li>`).join('')}</ul>
+    <p><strong>Total:</strong> £${money(total)}</p>
+    <div id="ticketQR" style="margin-top:10px;"></div>`;
+  ticketBody.innerHTML = ticketHtml;
+
+  // generate QR into #ticketQR
+  const qrData = JSON.stringify({name,vehicle,reg,date,time,items:cart.map(i=>i.name),total:money(total)});
+  const qrTarget = document.getElementById('ticketQR');
+  qrTarget.innerHTML = '';
+  QRCode.toCanvas(qrTarget, qrData, {width:140}, function(err){
+    if(err) console.error(err);
+  });
+
+  // show ticket modal
+  ticket.style.display = 'block';
+});
+
+/* -------------------------
+   Ticket controls (download + close)
+   ------------------------- */
+document.getElementById('downloadTicket').addEventListener('click', ()=>{
+  // use html2canvas to capture ticket element (ticket)
+  html2canvas(ticket).then(canvas=>{
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL('image/png');
+    link.download = 'SOS_Service_Booking.png';
+    link.click();
+  }).catch(err => { console.error(err); alert('Download failed'); });
+});
+
+document.getElementById('closeTicket').addEventListener('click', ()=>{
+  // hide ticket and reset entire state
+  ticket.style.display = 'none';
+  resetAll();
+});
+
+/* -------------------------
+   Reset function: clear cart, forms & UI
+   ------------------------- */
+function resetAll(){
+  cart = [];
+  selectedBaseId = null;
+  // clear outlines
+  document.querySelectorAll('.service-card').forEach(c=>{ c.style.outline='none'; c.querySelector('.service-items').style.display='none'; });
+  // hide addons, reset overlay
+  addonsWrap.style.display = 'none';
+  updateCartUI();
+  cartOverlay.style.display = 'none';
+  // clear forms
+  document.getElementById('serviceDate').value = '';
+  document.getElementById('serviceTime').selectedIndex = 0;
+  document.getElementById('custName').value = '';
+  document.getElementById('custPhone').value = '';
+  document.getElementById('custVehicle').value = '';
+  document.getElementById('custReg').value = '';
+  document.getElementById('custNotes').value = '';
+  // go back to step1
+  document.getElementById('step2').style.display='none';
+  document.getElementById('step3').style.display='none';
+  document.getElementById('step4').style.display='none';
+  document.getElementById('stepIndicator').textContent = 'Step 1 of 4 — Choose Base';
+  window.scrollTo({top:0,behavior:'smooth'});
+  showToast('Service builder reset');
+}
+
+/* -------------------------
+   Number plate formatting (UK)
+   ------------------------- */
+const regInput = document.getElementById('custReg');
+regInput.addEventListener('input', ()=>{
+  let v = regInput.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(v.length > 2 && v.length <=4) v = v.slice(0,2) + ' ' + v.slice(2);
+  else if(v.length > 4 && v.length <=7) v = v.slice(0,2) + ' ' + v.slice(2,4) + ' ' + v.slice(4);
+  else if(v.length > 7) v = v.slice(0,2) + ' ' + v.slice(2,4) + ' ' + v.slice(4,7);
+  regInput.value = v;
+});
+
+/* -------------------------
+   Emergency button (whatsapp prompt)
+   ------------------------- */
+document.getElementById('emergencyBtn').addEventListener('click', ()=>{
+  // show a confirm modal? quick whatsapp
+  if(confirm('Contact SOS Mechanics for emergency assistance?')) {
+    window.open('https://wa.me/447405937104?text=EMERGENCY%20SOS%20Mechanics','_blank');
+  }
+});
+
+/* -------------------------
+   Initialize add-ons hidden until base selected
+   ------------------------- */
+addonsWrap.style.display = 'none';
+document.getElementById('step2').style.display='none';
+document.getElementById('step3').style.display='none';
+document.getElementById('step4').style.display='none';
+updateCartUI();
+
+/* -------------------------
+   Auto-open cart when items added (helper)
+   ------------------------- */
+function openCartBrief(){
+  cartOverlay.style.display = 'block';
+  setTimeout(()=>cartOverlay.style.display = 'none', 2500);
+}
+
+/* Hook updateCartUI to show cart briefly when changed */
+const originalUpdate = updateCartUI;
+updateCartUI = function(){
+  // run original
+  originalUpdate();
+  // open briefly
+  openCartBrief();
+};
+
+/* note: we reassign above; ensure it exists */
+updateCartUI();
+
+/* -------------------------
+   Populate add-ons UI into DOM (already created earlier)
+   ------------------------- */
+function populateAddonsToGrid(){
+  // featured
+  const fGrid = document.getElementById('featuredGrid');
+  featuredAddons.forEach(a=>{
+    const el = document.createElement('div'); el.className='service-card';
+    el.dataset.id = a.id;
+    el.innerHTML = `<h3>${a.name}</h3><div class="service-meta">£${a.price} — ${a.time} mins</div>`;
+    el.addEventListener('click', ()=> {
+      const exists = findInCart(a.id);
+      if(!exists){ cart.push({ id:a.id, name:a.name, price:a.price, type:'addon' }); el.style.outline='3px solid rgba(0,191,165,0.14)'; showToast(`${a.name} added`); }
+      else { removeFromCart(a.id); el.style.outline='none'; showToast(`${a.name} removed`); }
+      updateCartUI();
+    });
+    fGrid.appendChild(el);
+  });
+  // regular
+  const rGrid = document.getElementById('regularGrid');
+  regularAddons.forEach(a=>{
+    const el = document.createElement('div'); el.className='service-card';
+    el.dataset.id = a.id;
+    el.innerHTML = `<h3>${a.name}</h3><div class="service-meta">£${a.price} — ${a.time} mins</div>`;
+    el.addEventListener('click', ()=> {
+      const exists = findInCart(a.id);
+      if(!exists){ cart.push({ id:a.id, name:a.name, price:a.price, type:'addon' }); el.style.outline='3px solid rgba(0,191,165,0.14)'; showToast(`${a.name} added`); }
+      else { removeFromCart(a.id); el.style.outline='none'; showToast(`${a.name} removed`); }
+      updateCartUI();
+    });
+    rGrid.appendChild(el);
+  });
+}
+populateAddonsToGrid();
+
+/* Ensure base package price visible: set data-price attr */
+document.querySelectorAll('.service-card[data-id]').forEach(elem=>{
+  // nothing for now; base cards created earlier
+});
+
+/* Final: prevent ticket from being visible until created */
+ticket.style.display='none';
+
+</script>
 </body>
 </html>
