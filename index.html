@@ -1,174 +1,190 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>SOS Mechanics — Service Builder</title>
-<meta name="description" content="SOS Mechanics — Mobile mechanic. Build your service plan, book, and get instant confirmation." />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<title>SOS Mechanics — Mobile Service Builder</title>
+<meta name="description" content="SOS Mechanics — Mobile mechanic in Medway, Chatham, Rochester, Strood & Gillingham. Build a service plan, book and get a ticket."/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<!-- QR + html2canvas -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 <style>
-  :root{
-    --teal-1:#00bfa5;
-    --teal-2:#26a69a;
-    --aqua-glass: rgba(0,191,165,0.18);
-    --accent:#ff7043;
-    --bg:#e8fbfb;
-    --text:#053936;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-  header{padding:18px 20px;display:flex;align-items:center;justify-content:space-between}
-  header h1{font-size:1.1rem;margin:0;color:var(--text)}
-  /* Buttons fixed */
-  #emergencyBtn{
-    position:fixed;top:16px;left:16px;z-index:1200;
-    background:linear-gradient(135deg,var(--accent),#ff5722);color:#fff;border:none;padding:10px 14px;border-radius:10px;font-weight:700;
-    box-shadow:0 6px 18px rgba(255,87,34,0.18);cursor:pointer;animation:emPulse 1.6s infinite;
-  }
-  @keyframes emPulse{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
-  #cartBtn{
-    position:fixed;right:16px;bottom:16px;z-index:1200;
-    background:linear-gradient(135deg,var(--teal-1),var(--teal-2));color:#fff;border:none;padding:12px 16px;border-radius:10px;font-weight:700;
-    box-shadow:0 6px 18px rgba(0,191,165,0.18);cursor:pointer;
-  }
+:root{
+  --teal-1:#00d0b8;
+  --teal-2:#00a693;
+  --glass-bg: rgba(255,255,255,0.06);
+  --glass-aqua: rgba(0,191,165,0.16);
+  --accent:#ff7043;
+  --text:#043833;
+  --muted:#6b8f88;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto; -webkit-font-smoothing:antialiased;background:linear-gradient(180deg,#e6fbfb,#f0fdfc);color:var(--text)}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px}
+.brand{font-weight:700}
+.sub{font-size:0.85rem;color:var(--muted)}
 
-  /* Hero */
-  .hero{padding:36px 20px;text-align:center}
-  .hero .card{max-width:980px;margin:0 auto;padding:26px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));backdrop-filter:blur(8px);box-shadow:0 8px 28px rgba(0,0,0,0.08)}
-  .hero h2{margin:0 0 8px 0;font-size:1.8rem;color:var(--text)}
-  .hero p{margin:0 0 16px;color:#0b3d36}
-  .btn-start{background:linear-gradient(135deg,var(--teal-1),var(--teal-2));color:#fff;padding:12px 20px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+.container{max-width:1100px;margin:0 auto;padding:10px}
 
-  /* Layout */
-  main{max-width:1100px;margin:20px auto;padding:0 18px}
-  .steps{display:flex;gap:12px;align-items:center;justify-content:center;margin:10px 0 24px}
-  .step-pill{padding:8px 14px;border-radius:20px;background:#ffffff;box-shadow:0 6px 18px rgba(0,0,0,0.06);font-weight:700;color:var(--text)}
-  /* Grid of services */
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-  .service-card{
-    border-radius:14px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
-    backdrop-filter:blur(8px);box-shadow:0 8px 22px rgba(0,0,0,0.08);cursor:pointer;position:relative;transition:transform .22s,box-shadow .22s;
-  }
-  .service-card:hover{transform:translateY(-6px);box-shadow:0 16px 32px rgba(0,0,0,0.12)}
-  .service-card h3{margin:0 0 6px}
-  .service-meta{color:#034a42;font-weight:700;margin-top:8px}
-  .service-items{margin-top:10px;padding-left:16px;display:none}
-  .service-items li{margin:6px 0;color:#033b34}
+/* glass card */
+.card{
+  background:var(--glass-aqua);
+  border-radius:14px;
+  padding:18px;
+  backdrop-filter:blur(8px);
+  box-shadow:0 10px 30px rgba(6,85,77,0.08);
+  border:1px solid rgba(255,255,255,0.08);
+}
 
-  /* Add-ons area hidden until base selected */
-  #addonsWrap{display:none;margin-top:18px}
+/* hero */
+.hero{margin:12px 0}
+.hero h1{margin:0;font-size:1.8rem}
+.hero p{margin:6px 0 14px;color:var(--muted)}
 
-  /* Cart overlay */
-  #cartOverlay{
-    position:fixed;right:16px;bottom:72px;width:320px;max-height:420px;overflow:auto;display:none;padding:12px;border-radius:12px;
-    background:var(--aqua-glass);backdrop-filter:blur(10px);box-shadow:0 12px 32px rgba(0,0,0,0.12);z-index:1150;
-  }
-  #cartOverlay h4{margin:6px 0 10px;font-size:1rem}
-  .cart-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
-  .cart-row .rm{background:#ff6b6b;border:none;color:white;padding:4px 8px;border-radius:8px;cursor:pointer}
+/* steps indicator */
+.steps{display:flex;gap:8px;align-items:center;margin:10px 0}
+.step-pill{background:white;padding:8px 12px;border-radius:999px;font-weight:700;box-shadow:0 6px 16px rgba(0,0,0,0.06)}
 
-  /* Form */
-  .form-card{margin-top:22px;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));backdrop-filter:blur(6px);box-shadow:0 8px 20px rgba(0,0,0,0.06)}
-  .form-card label{display:block;margin:8px 0 6px;font-weight:700}
-  .form-card input, .form-card select, .form-card textarea{
-    width:100%;padding:10px;border-radius:8px;border:none;background:rgba(255,255,255,0.12);color:var(--text);outline:none;
-  }
-  .form-row{display:flex;gap:12px}
-  .form-row > *{flex:1}
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:14px}
+.service-card{
+  padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  box-shadow:0 8px 24px rgba(6,85,77,0.06);cursor:pointer;transition:transform .18s,box-shadow .18s;
+}
+.service-card:hover{transform:translateY(-6px)}
+.service-card.selected{outline:3px solid rgba(0,191,165,0.12)}
+.service-meta{color:var(--muted);margin-top:8px;font-weight:600}
 
-  /* Ticket glass style */
-  #ticket{
-    position:fixed;left:50%;top:10%;transform:translateX(-50%);width:92%;max-width:420px;z-index:1250;
-    background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
-    backdrop-filter:blur(12px);padding:18px;border-radius:14px;box-shadow:0 18px 38px rgba(0,0,0,0.2);display:none;
-  }
-  .ticket-header{display:flex;justify-content:space-between;align-items:center}
-  .glass-btn{
-    background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
-    border:1px solid rgba(255,255,255,0.18);color:white;padding:8px 12px;border-radius:12px;cursor:pointer;font-weight:700;
-    backdrop-filter:blur(8px);
-  }
-  .glass-btn.primary{background:linear-gradient(135deg,var(--teal-1),var(--teal-2));color:#fff}
-  /* small responsive tweaks */
-  @media(max-width:640px){
-    #cartOverlay{right:8px;left:8px;width:auto}
-    #emergencyBtn{left:8px}
-    #cartBtn{right:8px}
-    .form-row{flex-direction:column}
-  }
+/* inline items */
+.service-items{display:none;margin-top:10px;padding-left:14px;color:var(--muted)}
+.service-items li{margin:6px 0}
+
+/* add-ons area hidden until base selected */
+#addonsWrap{display:none;margin-top:18px}
+
+/* floating buttons */
+#emergencyBtn{
+  position:fixed;top:14px;left:14px;z-index:1500;background:linear-gradient(135deg,var(--accent),#ff5722);color:white;border:none;padding:10px 14px;border-radius:12px;font-weight:800;box-shadow:0 8px 22px rgba(255,87,34,0.12);cursor:pointer;
+}
+#planBtn{
+  position:fixed;right:16px;bottom:18px;z-index:1500;background:linear-gradient(135deg,var(--teal-1),var(--teal-2));color:white;border:none;padding:12px 18px;border-radius:12px;font-weight:800;box-shadow:0 8px 22px rgba(0,191,165,0.12);cursor:pointer;display:flex;align-items:center;gap:10px;
+}
+
+/* cart overlay */
+#cartOverlay{
+  position:fixed;right:18px;bottom:80px;width:320px;max-height:440px;overflow:auto;padding:12px;border-radius:12px;z-index:1480;display:none;
+  background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));backdrop-filter:blur(10px);
+  box-shadow:0 14px 36px rgba(6,85,77,0.08);
+}
+.cart-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.rm-btn{background:#ff6b6b;border:none;color:white;padding:6px 8px;border-radius:8px;cursor:pointer}
+
+/* form */
+.form-card{margin-top:18px;padding:12px;border-radius:12px}
+label{display:block;margin:8px 0 6px;font-weight:700}
+input,select,textarea{
+  width:100%;padding:10px;border-radius:10px;border:none;background:rgba(255,255,255,0.06);color:var(--text);
+  outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);
+}
+.form-row{display:flex;gap:12px}
+.form-row> *{flex:1}
+
+/* bottom fixed Book Now if valid */
+#bookNowBar{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:1500;background:linear-gradient(135deg,var(--teal-1),var(--teal-2));
+  color:white;padding:12px 20px;border-radius:14px;box-shadow:0 12px 32px rgba(0,191,165,0.12);font-weight:800;display:flex;gap:10px;align-items:center;cursor:pointer;
+}
+
+/* ticket (modal) */
+#ticket{
+  position:fixed;left:50%;top:6%;transform:translateX(-50%);width:92%;max-width:480px;z-index:1600;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));backdrop-filter:blur(10px);box-shadow:0 24px 60px rgba(6,85,77,0.16);display:none;
+}
+.ticket-actions{display:flex;justify-content:space-between;gap:10px;margin-top:12px}
+.glass-btn{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.03);color:white;cursor:pointer;font-weight:700}
+.glass-primary{background:linear-gradient(135deg,var(--teal-1),var(--teal-2));color:white;border:none}
+
+/* toast */
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:110px;background:var(--teal-1);color:white;padding:10px 16px;border-radius:999px;display:none;z-index:1600;font-weight:700}
+
+/* responsive */
+@media(max-width:720px){
+  #cartOverlay{left:10px;right:10px;width:auto;bottom:78px}
+  #planBtn{right:8px}
+}
 </style>
 </head>
 <body>
-
-<header>
-  <h1>SOS Mechanics</h1>
-  <div style="font-size:.9rem;color:#044b43">Mobile repairs — Medway, Chatham, Rochester, Strood &amp; Gillingham</div>
+<header class="container">
+  <div class="brand">SOS Mechanics</div>
+  <div class="sub">Mobile Car Services — Medway, Chatham, Rochester, Strood & Gillingham</div>
 </header>
 
-<!-- Fixed Action Buttons -->
-<button id="emergencyBtn" aria-label="Emergency call">⚠️ Emergency</button>
-<button id="cartBtn" aria-label="My Service Plan">My Service Plan - £0.00</button>
-
-<main>
-  <section class="hero" style="padding:18px 20px">
-    <div class="card" style="max-width:980px;margin:0 auto;padding:18px;border-radius:14px;background:var(--aqua-glass);backdrop-filter:blur(8px)">
-      <h2 style="margin:0 0 6px">Build your service plan</h2>
-      <p style="margin:0 0 12px">Pick a base service (only one), then add extras. Prices update live. When ready, choose time &amp; enter details.</p>
-      <button id="startBtn" class="btn-start">Start</button>
+<main class="container">
+  <section class="hero card">
+    <h1>Build your service plan</h1>
+    <p>Pick a base package. Oil & filter included with every package. Add high-value extras, choose time, add vehicle & contact, then confirm.</p>
+    <div style="margin-top:8px;display:flex;gap:8px">
+      <div class="step-pill">Step 1 of 4</div>
+      <div class="step-pill" id="progText">Choose base</div>
     </div>
   </section>
 
-  <!-- Steps indicator -->
-  <div class="steps" aria-hidden="false">
-    <div class="step-pill" id="stepIndicator">Step 1 of 4 — Choose Base</div>
-  </div>
+  <!-- Step 1: base -->
+  <section id="step1" style="margin-top:14px">
+    <div class="card">
+      <h3>Base packages (click to expand)</h3>
+      <div class="grid" id="baseGrid"></div>
+    </div>
+  </section>
 
-  <!-- Step 1: Base services -->
-  <section id="step1">
-    <div style="padding:0 6px">
-      <h3 style="margin-bottom:8px">Base packages (click to expand details — oil & filter included with every package)</h3>
-      <div class="grid services-section" id="baseGrid">
-        <!-- cards inserted by JS -->
+  <!-- Add-ons -->
+  <section id="addonsWrap" style="margin-top:14px;display:none">
+    <div class="card">
+      <h3>Featured Add-ons</h3>
+      <div class="grid" id="featuredGrid"></div>
+      <h3 style="margin-top:12px">More Add-ons</h3>
+      <div class="grid" id="regularGrid"></div>
+      <div style="margin-top:12px;text-align:right"><button id="continueToVehicle" class="glass-btn">Continue to Vehicle Details →</button></div>
+    </div>
+  </section>
+
+  <!-- Step 2: date/time -->
+  <section id="step2" style="margin-top:14px;display:none">
+    <div class="card form-card">
+      <h3>Step 2 — Choose date & time</h3>
+      <p style="margin:4px 0 10px;color:var(--muted)">Operating hours: 08:00 — 18:00 (out-of-hours surcharge applies)</p>
+      <div class="form-row">
+        <div>
+          <label for="serviceDate">Date</label>
+          <input id="serviceDate" type="date" />
+        </div>
+        <div>
+          <label for="serviceTime">Hour slot</label>
+          <select id="serviceTime">
+            <option value="08">08:00</option><option value="09">09:00</option><option value="10">10:00</option><option value="11">11:00</option>
+            <option value="12">12:00</option><option value="13">13:00</option><option value="14">14:00</option><option value="15">15:00</option>
+            <option value="16">16:00</option><option value="17">17:00</option>
+          </select>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Add-ons (hidden until base selected) -->
-  <section id="addonsWrap" style="padding-top:18px">
-    <h3 style="margin:6px 0 8px">Featured Add-ons</h3>
-    <div class="grid" id="featuredGrid"></div>
-    <h3 style="margin:14px 0 8px">More Add-ons</h3>
-    <div class="grid" id="regularGrid"></div>
-  </section>
-
-  <!-- Step 2: Date/Time -->
-  <section id="step2" style="display:none;margin-top:18px">
-    <div class="form-card">
-      <h3>Step 2 — Choose date &amp; time</h3>
-      <p style="margin:0 0 8px">Operating hours: 08:00 — 18:00. Out-of-hours surcharge will apply if outside.</p>
-      <label for="serviceDate">Preferred date</label>
-      <input id="serviceDate" type="date" />
-      <label for="serviceTime">Preferred time (hour slots)</label>
-      <select id="serviceTime">
-        <option value="9">09:00</option><option value="10">10:00</option><option value="11">11:00</option><option value="12">12:00</option>
-        <option value="13">13:00</option><option value="14">14:00</option><option value="15">15:00</option><option value="16">16:00</option>
-      </select>
       <div style="margin-top:12px;display:flex;gap:10px">
-        <button id="toStep3" class="btn-primary">Next: Contact</button>
-        <button id="backTo1" class="glass-btn" style="background:#fff">Back</button>
+        <button id="toStep3" class="glass-btn glass-primary">Next: Vehicle</button>
+        <button id="backTo1" class="glass-btn">Back</button>
       </div>
     </div>
   </section>
 
-  <!-- Step 3: Contact -->
-  <section id="step3" style="display:none;margin-top:18px">
-    <div class="form-card">
+  <!-- Step 3: contact & vehicle -->
+  <section id="step3" style="margin-top:14px;display:none">
+    <div class="card form-card">
       <h3>Step 3 — Your details & vehicle</h3>
       <label for="custName">Full name</label>
       <input id="custName" type="text" placeholder="John Smith" />
       <label for="custPhone">Phone</label>
       <input id="custPhone" type="tel" placeholder="07400 000000" />
-      <div class="form-row">
+      <div class="form-row" style="margin-top:8px">
         <div>
           <label for="custVehicle">Vehicle model</label>
           <input id="custVehicle" type="text" placeholder="Ford Focus" />
@@ -179,470 +195,475 @@
         </div>
       </div>
       <label for="custNotes">Notes / precise location</label>
-      <textarea id="custNotes" rows="3" placeholder="Optional…"></textarea>
+      <textarea id="custNotes" rows="3" placeholder="Optional — leave exact location or instructions"></textarea>
       <div style="margin-top:12px;display:flex;gap:10px">
-        <button id="toStep4" class="btn-primary">Next: Confirm & Send</button>
+        <button id="toStep4" class="glass-btn glass-primary">Next: Confirm</button>
         <button id="backTo2" class="glass-btn">Back</button>
       </div>
     </div>
   </section>
 
-  <!-- Step 4: Confirmation (ticket appears after send) -->
-  <section id="step4" style="display:none;margin-top:18px">
-    <div class="form-card">
-      <h3>Step 4 — Confirm & Send</h3>
-      <div id="confirmSummary" style="margin:8px 0"></div>
-      <div style="display:flex;gap:10px;margin-top:12px">
-        <button id="sendWhatsApp" class="btn-primary">Send to WhatsApp</button>
+  <!-- Step 4: confirm -->
+  <section id="step4" style="margin-top:14px;display:none">
+    <div class="card form-card">
+      <h3>Step 4 — Confirm & send</h3>
+      <div id="confirmSummary" style="margin-top:8px;color:var(--muted)"></div>
+      <div style="margin-top:12px;display:flex;gap:10px">
+        <button id="previewWhatsApp" class="glass-btn glass-primary">Preview WhatsApp</button>
         <button id="backTo3" class="glass-btn">Back</button>
       </div>
     </div>
   </section>
-
 </main>
 
 <!-- Cart overlay -->
-<div id="cartOverlay" role="region" aria-label="Service Plan">
-  <h4>Your Service Plan</h4>
+<div id="cartOverlay" aria-live="polite">
+  <h4 style="margin:6px 0 8px">My Service Plan</h4>
   <div id="cartList"></div>
-  <div style="margin-top:8px;font-weight:800">Total: £<span id="cartTotal">0.00</span></div>
+  <div style="margin-top:10px;font-weight:800">Total: £<span id="cartTotal">0.00</span></div>
 </div>
 
-<!-- Ticket (glass) -->
-<div id="ticket" role="dialog" aria-modal="true" aria-label="Service booking ticket">
-  <div class="ticket-header">
+<!-- Floating action buttons -->
+<button id="emergencyBtn" aria-label="Emergency">⚠️ Emergency</button>
+<button id="planBtn" aria-label="My Service Plan">My Service Plan — £0.00</button>
+
+<!-- Always-visible Book Now bar (disabled until all required fields valid) -->
+<div id="bookNowBar" style="display:none" aria-hidden="true">
+  <div id="bookNowText">Complete details to enable booking</div>
+</div>
+
+<!-- Ticket modal -->
+<div id="ticket" role="dialog" aria-modal="true" aria-label="Service ticket">
+  <div style="display:flex;justify-content:space-between;align-items:center">
     <strong>Service Booking</strong>
-    <div>
-      <button id="downloadTicket" class="glass-btn primary">Download</button>
+    <div style="display:flex;gap:8px">
+      <button id="downloadTicket" class="glass-btn glass-primary">Download</button>
       <button id="closeTicket" class="glass-btn">Close</button>
     </div>
   </div>
-  <div id="ticketBody" style="margin-top:12px">
-    <!-- populated -->
-  </div>
+  <div id="ticketContent" style="margin-top:12px;color:var(--muted)"></div>
 </div>
 
-<!-- libraries -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- toast -->
+<div id="toast"></div>
 
 <script>
-/* -------------------------
-   Data / initial lists
-   ------------------------- */
+/* ========= Data ========== */
 const basePackages = [
-  { id:'basic', name:'Basic Service', price:100, time:85, items:['Oil & Filter','Brake Check','Fluid Top-Up'] },
-  { id:'interim', name:'Interim Service', price:150, time:110, items:['Oil & Filter','Brake Check','Fluid Top-Up','Air Filter Replacement','Battery Check'] },
-  { id:'full', name:'Full Service', price:250, time:145, items:['Oil & Filter','Brake Check','Fluid Top-Up','Tyre Inspection','Battery Check','Air Filter Replacement','Wiper Blade Replacement'] }
+  { id:'basic', name:'Basic Service', price:120, time:85, items:['Oil & Filter','Brake Check','Fluid Top-Up'] },
+  { id:'interim', name:'Interim Service', price:175, time:115, items:['Oil & Filter','Brake Check','Fluid Top-Up','Air Filter','Battery Check'] },
+  { id:'full', name:'Full Service', price:250, time:145, items:['Oil & Filter','Brake Check','Fluid Top-Up','Tyre Inspection','Battery Check','Air Filter','Wiper Blade Replacement'] }
 ];
 const featuredAddons = [
   { id:'air', name:'Air Filter Replacement', price:30, time:20 },
-  { id:'battery', name:'Battery Check', price:40, time:20 },
-  { id:'brk-fluid', name:'Brake Fluid Flush', price:35, time:25 },
-  { id:'wheel-align', name:'Wheel Alignment', price:60, time:30 }
+  { id:'battery', name:'Battery Health Check', price:40, time:20 },
+  { id:'brkfluid', name:'Brake Fluid Flush', price:35, time:25 },
+  { id:'wheel', name:'Wheel Alignment', price:60, time:30 }
 ];
 const regularAddons = [
-  { id:'wiper', name:'Wiper Replacement', price:15, time:10 },
+  { id:'wiper', name:'Wiper Blade Replacement', price:15, time:10 },
   { id:'tyre', name:'Tyre Pressure Check', price:10, time:10 },
   { id:'coolant', name:'Coolant Top-Up', price:20, time:15 },
   { id:'spark', name:'Spark Plug Replacement', price:45, time:40 },
-  { id:'trans', name:'Transmission Fluid Check', price:40, time:30 },
-  { id:'diag', name:'Full Diagnostic', price:70, time:45 },
-  { id:'head', name:'Headlight Bulb', price:20, time:15 },
-  { id:'brakepad', name:'Brake Pad Check', price:25, time:20 }
+  { id:'diag', name:'Engine Diagnostic Scan', price:35, time:30 },
+  { id:'head', name:'Headlight Bulb Replacement', price:20, time:15 },
+  { id:'brakepad', name:'Brake Pad Wear Check', price:25, time:20},
+  { id:'ac', name:'AC Service', price:50, time:45 }
 ];
 
-/* -------------------------
-   State
-   ------------------------- */
-let cart = [];            // selected items (base with type 'base', add-ons with type 'addon')
-let selectedBaseId = null;
+/* ========= State ========== */
+let cart = []; // objects {id,name,price,type:'base'|'addon'}
+let selectedBase = null;
+let savedKey = 'sos_builder_v1';
 
-/* -------------------------
-   DOM refs
-   ------------------------- */
+/* ========= DOM refs ========== */
 const baseGrid = document.getElementById('baseGrid');
 const featuredGrid = document.getElementById('featuredGrid');
 const regularGrid = document.getElementById('regularGrid');
 const addonsWrap = document.getElementById('addonsWrap');
-const cartBtn = document.getElementById('cartBtn');
 const cartOverlay = document.getElementById('cartOverlay');
 const cartList = document.getElementById('cartList');
 const cartTotalEl = document.getElementById('cartTotal');
+const planBtn = document.getElementById('planBtn');
+const bookNowBar = document.getElementById('bookNowBar');
+const bookNowText = document.getElementById('bookNowText');
+const toast = document.getElementById('toast');
+
+/* step elements */
+const step2 = document.getElementById('step2');
+const step3 = document.getElementById('step3');
+const step4 = document.getElementById('step4');
+const step1 = document.getElementById('step1');
+const progText = document.getElementById('progText');
+
+/* form fields */
+const serviceDate = document.getElementById('serviceDate');
+const serviceTime = document.getElementById('serviceTime');
+const custName = document.getElementById('custName');
+const custPhone = document.getElementById('custPhone');
+const custVehicle = document.getElementById('custVehicle');
+const custReg = document.getElementById('custReg');
+const custNotes = document.getElementById('custNotes');
+
+/* ticket */
 const ticket = document.getElementById('ticket');
-const ticketBody = document.getElementById('ticketBody');
-const startBtn = document.getElementById('startBtn');
+const ticketContent = document.getElementById('ticketContent');
 
-/* -------------------------
-   Helpers
-   ------------------------- */
-function money(n){ return n.toFixed(2); }
-function findInCart(id){ return cart.find(i=>i.id===id); }
-function removeFromCart(id){ cart = cart.filter(i=>i.id!==id); updateCartUI(); }
-function showToast(msg){ /* simple */ alert(msg); }
+/* ========= Helpers ========= */
+const money = v => Number(v).toFixed(2);
+function showToast(msg,ms=1800){ toast.textContent = msg; toast.style.display='block'; setTimeout(()=>toast.style.display='none', ms); }
+function saveState(){ const state={cart,selectedBase,forms:{serviceDate:serviceDate.value,serviceTime:serviceTime.value,custName:custName.value,custPhone:custPhone.value,custVehicle:custVehicle.value,custReg:custReg.value,custNotes:custNotes.value}}; localStorage.setItem(savedKey, JSON.stringify(state)); }
+function restoreState(){
+  const raw = localStorage.getItem(savedKey);
+  if(!raw) return;
+  try{
+    const s = JSON.parse(raw);
+    cart = s.cart||[]; selectedBase = s.selectedBase||null;
+    // restore forms
+    if(s.forms){
+      serviceDate.value = s.forms.serviceDate||'';
+      serviceTime.value = s.forms.serviceTime||serviceTime.options[0].value;
+      custName.value = s.forms.custName||'';
+      custPhone.value = s.forms.custPhone||'';
+      custVehicle.value = s.forms.custVehicle||'';
+      custReg.value = s.forms.custReg||'';
+      custNotes.value = s.forms.custNotes||'';
+    }
+  }catch(e){}
+}
 
-/* -------------------------
-   Populate UI
-   ------------------------- */
-function createBaseCard(pkg){
-  const card = document.createElement('div');
-  card.className='service-card';
-  card.dataset.id = pkg.id;
-  card.innerHTML = `<h3>${pkg.name} — £${pkg.price}</h3><div class="service-meta">${pkg.time} mins</div>`;
-  const items = document.createElement('div');
-  items.className = 'service-items';
+/* SHA-256 helper for secure ticket hash */
+async function sha256base64(str){
+  const enc = new TextEncoder().encode(str);
+  const hash = await crypto.subtle.digest('SHA-256', enc);
+  const b64 = btoa(String.fromCharCode(...new Uint8Array(hash)));
+  return b64;
+}
+
+/* ========= Render UI ========= */
+function makeBaseCard(pkg){
+  const div = document.createElement('div');
+  div.className='service-card';
+  div.dataset.id = pkg.id;
+  div.innerHTML = `<h4>${pkg.name} — £${money(pkg.price)}</h4><div class="service-meta">${Math.ceil(pkg.time/60)}h ${(pkg.time%60)}m</div>`;
   const ul = document.createElement('ul');
-  pkg.items.forEach(it => {
-    const li = document.createElement('li'); li.textContent = `${it}  ×1`; ul.appendChild(li);
+  ul.className='service-items';
+  pkg.items.forEach(it=>{
+    const li = document.createElement('li'); li.textContent = `${it} ×1`; ul.appendChild(li);
   });
-  items.appendChild(ul);
-  card.appendChild(items);
+  div.appendChild(ul);
 
-  // Expand toggle + selection behavior
-  card.addEventListener('click', (e)=>{
-    // If click on inner button etc, ignore — but we have none
-    // Toggle expand
-    items.style.display = items.style.display === 'block' ? 'none' : 'block';
-    // Select base: ensure only one base
-    if(selectedBaseId !== pkg.id){
-      // remove existing base from cart
-      cart = cart.filter(it => it.type !== 'base');
+  div.addEventListener('click', ()=>{
+    // toggle expand
+    ul.style.display = ul.style.display==='block' ? 'none' : 'block';
+    if(selectedBase !== pkg.id){
+      // remove old base
+      cart = cart.filter(i=>i.type!=='base');
       // add new base
-      cart.unshift({ id: pkg.id, name: pkg.name, price: pkg.price, time: pkg.time, type:'base' });
-      selectedBaseId = pkg.id;
-      // reveal add-ons
+      cart.unshift({ id: pkg.id, name: pkg.name, price: pkg.price, type:'base', items: pkg.items });
+      selectedBase = pkg.id;
+      // show addons
       addonsWrap.style.display = 'block';
-      showToast(`${pkg.name} added to plan`);
+      // visual mark
+      document.querySelectorAll('.service-card').forEach(c=>c.classList.remove('selected'));
+      div.classList.add('selected');
+      progText.textContent = 'Base selected — add extras';
+      step2.style.display = 'block';
+      // save & update
       updateCartUI();
-      // visual selected state
-      document.querySelectorAll('.service-card').forEach(c=>c.style.outline='none');
-      card.style.outline = '3px solid rgba(0,191,165,0.14)';
-      // advance step indicator
-      document.getElementById('stepIndicator').textContent = 'Step 1 of 4 — Base selected';
-      // show step 2 button automatically (user flow)
-      document.getElementById('step2').style.display='block';
-      window.scrollTo({top:document.getElementById('step2').offsetTop-80,behavior:'smooth'});
+      showToast(`${pkg.name} added`);
+      saveState();
+      // auto-scroll to addons
+      setTimeout(()=>{ addonsWrap.scrollIntoView({behavior:'smooth',block:'start'}); },250);
     }
   });
-
-  return card;
+  return div;
 }
-function createAddonCard(addon){
-  const card = document.createElement('div');
-  card.className='service-card';
-  card.dataset.id = addon.id;
-  card.innerHTML = `<h3>${addon.name}</h3><div class="service-meta">£${addon.price} · ${addon.time} mins</div>`;
-  card.addEventListener('click', ()=>{
-    // toggle add-on in cart
-    const exists = findInCart(addon.id);
+function makeAddonCard(add){
+  const div = document.createElement('div');
+  div.className='service-card';
+  div.dataset.id = add.id;
+  div.innerHTML = `<h4>${add.name}</h4><div class="service-meta">£${money(add.price)} · ${add.time} mins</div>`;
+  div.addEventListener('click', ()=>{
+    const exists = cart.find(i=>i.id===add.id);
     if(!exists){
-      cart.push({ id: addon.id, name: addon.name, price: addon.price, time:addon.time, type:'addon' });
-      card.style.outline = '3px solid rgba(0,191,165,0.14)';
-      showToast(`${addon.name} added`);
+      cart.push({ id:add.id, name:add.name, price:add.price, type:'addon' });
+      div.classList.add('selected'); showToast(`${add.name} added`);
     } else {
-      removeFromCart(addon.id);
-      card.style.outline = 'none';
-      showToast(`${addon.name} removed`);
+      cart = cart.filter(i=>i.id!==add.id);
+      div.classList.remove('selected'); showToast(`${add.name} removed`);
     }
-    updateCartUI();
+    updateCartUI(); saveState();
   });
-  return card;
+  return div;
 }
 
-/* render lists */
-basePackages.forEach(b=>{
-  baseGrid.appendChild(createBaseCard(b));
-});
-featuredAddons.forEach(a=>featuredGrid.appendChild(createAddonCard(a)));
-regularAddons.forEach(a=>regularGrid.appendChild(createAddonCard(a)));
+/* populate lists */
+basePackages.forEach(b=> baseGrid.appendChild(makeBaseCard(b)) );
+featuredAddons.forEach(a=> featuredGrid.appendChild(makeAddonCard(a)) );
+regularAddons.forEach(a=> regularGrid.appendChild(makeAddonCard(a)) );
 
-/* -------------------------
-   Cart UI & total
-   ------------------------- */
+/* ========= Cart UI ========= */
 function updateCartUI(){
-  cartList.innerHTML='';
+  cartList.innerHTML = '';
   let total = 0;
-  cart.forEach((it, idx)=>{
-    const row = document.createElement('div');
-    row.className='cart-row';
-    row.innerHTML = `<div>${it.name} <small style="opacity:.8">£${money(it.price)}</small></div><div><button class="rm" data-id="${it.id}">Remove</button></div>`;
+  cart.forEach(it=>{
+    const row = document.createElement('div'); row.className='cart-row';
+    row.innerHTML = `<div><strong>${it.name}</strong> <div style="font-size:.85rem;color:var(--muted)">£${money(it.price || 0)}</div></div>
+      <div><button class="rm-btn" data-id="${it.id}">Remove</button></div>`;
     cartList.appendChild(row);
-    total += it.price;
+    total += Number(it.price || 0);
   });
   cartTotalEl.textContent = money(total);
-  cartBtn.textContent = `My Service Plan - £${money(total)}`;
-  // wire remove buttons
-  cartList.querySelectorAll('button.rm').forEach(btn=>{
-    btn.addEventListener('click', ()=> {
-      const id = btn.dataset.id;
-      removeFromCart(id);
-      // also un-outline add-on/ base visual
-      const el = document.querySelector(`[data-id="${id}"]`);
-      if(el) el.style.outline = 'none';
-    });
+  planBtn.textContent = `My Service Plan — £${money(total)}`;
+  // update bookNowBar text/enable
+  validateBookNow();
+  // bind remove
+  cartList.querySelectorAll('.rm-btn').forEach(b=>{
+    b.addEventListener('click', ()=>{ const id=b.dataset.id; cart = cart.filter(i=>i.id!==id); document.querySelector(`[data-id="${id}"]`)?.classList.remove('selected'); updateCartUI(); saveState(); });
   });
 }
 
-/* open/close cart overlay */
-cartBtn.addEventListener('click', ()=>{
-  cartOverlay.style.display = (cartOverlay.style.display==='block') ? 'none' : 'block';
-  cartOverlay.scrollTop = 0;
+/* quick open/close cart overlay */
+planBtn.addEventListener('click', ()=>{ cartOverlay.style.display = cartOverlay.style.display==='block' ? 'none' : 'block'; cartOverlay.scrollTop = 0; });
+
+/* ========= Step navigation ========= */
+document.getElementById('continueToVehicle').addEventListener('click', ()=>{
+  // behave like proceed to Step2 then Step3
+  if(!selectedBase){ alert('Please select a base package first'); return; }
+  // hide services gracefully
+  document.getElementById('step1').style.display='none';
+  addonsWrap.style.display='none';
+  document.getElementById('step2').style.display='block';
+  progText.textContent = 'Step 2 of 4 — Choose date & time';
+  window.scrollTo({top: document.getElementById('step2').offsetTop-80, behavior:'smooth'});
 });
 
-/* -------------------------
-   Step navigation
-   ------------------------- */
-document.getElementById('startBtn').addEventListener('click', ()=> {
-  // scroll to base selection
-  window.scrollTo({top: document.getElementById('baseGrid').offsetTop - 80, behavior:'smooth'});
-});
-
-/* Step2 controls */
+/* Step2 actions */
 document.getElementById('toStep3').addEventListener('click', ()=>{
-  // validate date/time chosen
-  const date = document.getElementById('serviceDate').value;
-  const time = document.getElementById('serviceTime').value;
-  if(!date){ alert('Please pick a date'); return; }
+  if(!serviceDate.value){ alert('Please select a date'); return; }
+  // ensure future date
+  const chosen = new Date(serviceDate.value);
+  const today = new Date(); today.setHours(0,0,0,0);
+  if(chosen < today){ alert('Please pick a future date'); return; }
   document.getElementById('step2').style.display='none';
   document.getElementById('step3').style.display='block';
-  document.getElementById('stepIndicator').textContent = 'Step 3 of 4 — Contact & Vehicle';
-  window.scrollTo({top: document.getElementById('step3').offsetTop - 80, behavior:'smooth'});
+  progText.textContent = 'Step 3 of 4 — Vehicle & Contact';
+  window.scrollTo({top: document.getElementById('step3').offsetTop-80, behavior:'smooth'});
 });
-document.getElementById('backTo1').addEventListener('click', ()=>{
-  document.getElementById('step2').style.display='none';
-  document.getElementById('stepIndicator').textContent = 'Step 1 of 4 — Choose Base';
-});
+document.getElementById('backTo1').addEventListener('click', ()=>{ document.getElementById('step2').style.display='none'; document.getElementById('step1').style.display='block'; progText.textContent='Step 1 of 4 — Choose base'; });
 
-/* Step3 controls */
-document.getElementById('toStep4').addEventListener('click', ()=>{
+document.getElementById('backTo2').addEventListener('click', ()=>{ document.getElementById('step3').style.display='none'; document.getElementById('step2').style.display='block'; progText.textContent='Step 2 of 4 — Choose date & time'; });
+
+document.getElementById('toStep4').addEventListener('click', ()=> {
   // validate contact fields
-  const n = document.getElementById('custName').value.trim();
-  const p = document.getElementById('custPhone').value.trim();
-  const v = document.getElementById('custVehicle').value.trim();
-  const r = document.getElementById('custReg').value.trim();
-  if(!n || !p || !v || !r){ alert('Please complete name, phone, vehicle and registration'); return; }
+  if(!custName.value.trim()||!custPhone.value.trim()||!custVehicle.value.trim()||!custReg.value.trim()){ alert('Please fill name, phone, vehicle and registration'); return; }
   document.getElementById('step3').style.display='none';
   document.getElementById('step4').style.display='block';
-  document.getElementById('stepIndicator').textContent = 'Step 4 of 4 — Confirm';
+  progText.textContent = 'Step 4 of 4 — Confirm';
   buildConfirmSummary();
-  window.scrollTo({top: document.getElementById('step4').offsetTop - 80, behavior:'smooth'});
-});
-document.getElementById('backTo2').addEventListener('click', ()=>{
-  document.getElementById('step3').style.display='none';
-  document.getElementById('step2').style.display='block';
-  document.getElementById('stepIndicator').textContent = 'Step 2 of 4 — Choose Date & Time';
+  window.scrollTo({top: document.getElementById('step4').offsetTop-80, behavior:'smooth'});
 });
 
-/* Step4 back */
-document.getElementById('backTo3').addEventListener('click', ()=>{
-  document.getElementById('step4').style.display='none';
-  document.getElementById('step3').style.display='block';
-  document.getElementById('stepIndicator').textContent = 'Step 3 of 4 — Contact & Vehicle';
-});
+/* back in Step4 */
+document.getElementById('backTo3').addEventListener('click', ()=>{ document.getElementById('step4').style.display='none'; document.getElementById('step3').style.display='block'; progText.textContent='Step 3 of 4 — Vehicle & Contact'; });
 
-/* -------------------------
-   Confirm summary and send
-   ------------------------- */
+/* ========= Confirm & WhatsApp preview ========= */
 function buildConfirmSummary(){
-  const el = document.getElementById('confirmSummary');
-  if(cart.length===0){ el.innerHTML = '<em>No services selected.</em>'; return; }
+  const summary = document.getElementById('confirmSummary');
+  if(cart.length===0) { summary.innerHTML = '<em>No services selected</em>'; return; }
   let total = 0;
   let html = '<ul>';
-  cart.forEach(it=>{
-    html += `<li>${it.name} — £${money(it.price)}</li>`;
-    total += it.price;
-  });
-  html += '</ul>';
-  const date = document.getElementById('serviceDate').value;
-  const time = document.getElementById('serviceTime').value;
-  html += `<p><strong>Date:</strong> ${date} &nbsp; <strong>Time:</strong> ${time}:00</p>`;
-  html += `<p><strong>Total:</strong> £${money(total)}</p>`;
-  el.innerHTML = html;
+  cart.forEach(it=>{ html += `<li>${it.name} — £${money(it.price||0)}</li>`; total += Number(it.price||0); });
+  html += `</ul><p><strong>Total: £${money(total)}</strong></p>`;
+  html += `<p>Date: ${serviceDate.value} at ${serviceTime.value}:00</p>`;
+  html += `<p>Customer: ${custName.value || ''} • ${custPhone.value || ''}</p>`;
+  summary.innerHTML = html;
 }
 
-/* WhatsApp send -> show ticket */
-document.getElementById('sendWhatsApp').addEventListener('click', ()=>{
-  // validate final and build message
+/* WhatsApp preview and send -> shows ticket */
+document.getElementById('previewWhatsApp').addEventListener('click', async ()=>{
   if(cart.length===0){ alert('No services selected'); return; }
-  const name = document.getElementById('custName').value.trim();
-  const phone = document.getElementById('custPhone').value.trim();
-  const vehicle = document.getElementById('custVehicle').value.trim();
-  const reg = document.getElementById('custReg').value.trim();
-  const date = document.getElementById('serviceDate').value;
-  const time = document.getElementById('serviceTime').value;
-  const notes = document.getElementById('custNotes').value.trim();
-  let total = 0;
-  let itemsText = '';
-  cart.forEach(it => { itemsText += `${it.name} (£${money(it.price)})\n`; total += it.price; });
+  const name = custName.value.trim(); const phone = custPhone.value.trim(); const vehicle = custVehicle.value.trim(); const reg = custReg.value.trim();
+  const itemsText = cart.map(i=>`${i.name} (£${money(i.price||0)})`).join('\n');
+  const total = money(cart.reduce((s,i)=>s+Number(i.price||0),0));
+  const msg = `SOS Mechanics Booking:\nName: ${name}\nPhone: ${phone}\nVehicle: ${vehicle}\nReg: ${reg}\nDate/Time: ${serviceDate.value} ${serviceTime.value}:00\nServices:\n${itemsText}\nTotal: £${total}\nNotes: ${custNotes.value||''}`;
+  // preview in confirm then open WA
+  if(!confirm('Preview message to send via WhatsApp:\n\n' + msg.replace(/\n/g,'\n'))){ return; }
+  // open WhatsApp
+  window.open(`https://wa.me/447405937104?text=${encodeURIComponent(msg)}`,'_blank');
 
-  const message = `SOS Mechanics Booking:\nName: ${name}\nPhone: ${phone}\nVehicle: ${vehicle}\nReg: ${reg}\nDate/Time: ${date} ${time}:00\nServices:\n${itemsText}Total: £${money(total)}\nNotes: ${notes}`;
-  // open whatsapp
-  window.open(`https://wa.me/447405937104?text=${encodeURIComponent(message)}`,'_blank');
+  // generate secure QR hash and show ticket
+  const hashSource = JSON.stringify({name,phone,vehicle,reg,date:serviceDate.value,time:serviceTime.value,items:cart.map(i=>i.name),total});
+  const hash = await sha256base64(hashSource);
+  showTicket({name,phone,vehicle,reg,date:serviceDate.value,time:serviceTime.value,items:cart,total,hash});
+  // store for rebook suggestion
+  localStorage.setItem('sos_last_booking', JSON.stringify({name,vehicle,reg,date:serviceDate.value,total}));
+});
 
-  // populate ticket (hidden until now)
-  const ticketHtml = `<p><strong>Name:</strong> ${name}</p>
-    <p><strong>Vehicle:</strong> ${vehicle}</p>
-    <p><strong>Reg:</strong> ${reg}</p>
-    <p><strong>Date/Time:</strong> ${date} ${time}:00</p>
+/* ========= Ticket UI ========= */
+function showTicket(data){
+  let html = `<p><strong>Name:</strong> ${data.name}</p>
+    <p><strong>Vehicle:</strong> ${data.vehicle}</p>
+    <p><strong>Reg:</strong> ${data.reg}</p>
+    <p><strong>Date/Time:</strong> ${data.date} ${data.time}:00</p>
     <hr>
-    <ul>${cart.map(it=>`<li>${it.name} — £${money(it.price)}</li>`).join('')}</ul>
-    <p><strong>Total:</strong> £${money(total)}</p>
-    <div id="ticketQR" style="margin-top:10px;"></div>`;
-  ticketBody.innerHTML = ticketHtml;
-
-  // generate QR into #ticketQR
-  const qrData = JSON.stringify({name,vehicle,reg,date,time,items:cart.map(i=>i.name),total:money(total)});
+    <ul>${data.items.map(i=>`<li>${i.name} — £${money(i.price||0)}</li>`).join('')}</ul>
+    <p><strong>Total:</strong> £${money(data.total)}</p>
+    <p style="font-size:.8rem;color:var(--muted)">Security token (QR) included for verification</p>
+    <div id="ticketQR"></div>`;
+  ticketContent.innerHTML = html;
+  // QRcode include the hash and human-readable summary
+  const qrData = JSON.stringify({hash:data.hash, name:data.name, reg:data.reg, total:money(data.total)});
   const qrTarget = document.getElementById('ticketQR');
   qrTarget.innerHTML = '';
-  QRCode.toCanvas(qrTarget, qrData, {width:140}, function(err){
+  QRCode.toCanvas(qrTarget, qrData, {width:140}, function(err, canvas){
     if(err) console.error(err);
   });
-
-  // show ticket modal
   ticket.style.display = 'block';
-});
+}
 
-/* -------------------------
-   Ticket controls (download + close)
-   ------------------------- */
+/* download ticket image */
 document.getElementById('downloadTicket').addEventListener('click', ()=>{
-  // use html2canvas to capture ticket element (ticket)
   html2canvas(ticket).then(canvas=>{
-    const link = document.createElement('a');
-    link.href = canvas.toDataURL('image/png');
-    link.download = 'SOS_Service_Booking.png';
-    link.click();
-  }).catch(err => { console.error(err); alert('Download failed'); });
+    const link = document.createElement('a'); link.download = 'SOS_Service_Booking.png'; link.href = canvas.toDataURL(); link.click();
+  }).catch(err=>{ console.error(err); alert('Download failed'); });
 });
 
+/* close ticket -> reset all */
 document.getElementById('closeTicket').addEventListener('click', ()=>{
-  // hide ticket and reset entire state
   ticket.style.display = 'none';
   resetAll();
 });
 
-/* -------------------------
-   Reset function: clear cart, forms & UI
-   ------------------------- */
+/* ========= Reset ========= */
 function resetAll(){
-  cart = [];
-  selectedBaseId = null;
-  // clear outlines
-  document.querySelectorAll('.service-card').forEach(c=>{ c.style.outline='none'; c.querySelector('.service-items').style.display='none'; });
-  // hide addons, reset overlay
+  cart = []; selectedBase = null;
+  document.querySelectorAll('.service-card').forEach(c=>{ c.classList.remove('selected'); c.querySelector('.service-items')?.style.display='none'; });
   addonsWrap.style.display = 'none';
-  updateCartUI();
-  cartOverlay.style.display = 'none';
+  document.getElementById('step1').style.display = 'block';
+  step2.style.display = 'none'; step3.style.display = 'none'; step4.style.display = 'none';
+  progText.textContent = 'Choose base';
   // clear forms
-  document.getElementById('serviceDate').value = '';
-  document.getElementById('serviceTime').selectedIndex = 0;
-  document.getElementById('custName').value = '';
-  document.getElementById('custPhone').value = '';
-  document.getElementById('custVehicle').value = '';
-  document.getElementById('custReg').value = '';
-  document.getElementById('custNotes').value = '';
-  // go back to step1
-  document.getElementById('step2').style.display='none';
-  document.getElementById('step3').style.display='none';
-  document.getElementById('step4').style.display='none';
-  document.getElementById('stepIndicator').textContent = 'Step 1 of 4 — Choose Base';
-  window.scrollTo({top:0,behavior:'smooth'});
-  showToast('Service builder reset');
+  serviceDate.value=''; serviceTime.selectedIndex=0; custName.value=''; custPhone.value=''; custVehicle.value=''; custReg.value=''; custNotes.value='';
+  updateCartUI(); cartOverlay.style.display='none';
+  saveState();
+  showToast('Reset to start');
 }
 
-/* -------------------------
-   Number plate formatting (UK)
-   ------------------------- */
-const regInput = document.getElementById('custReg');
-regInput.addEventListener('input', ()=>{
-  let v = regInput.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
-  if(v.length > 2 && v.length <=4) v = v.slice(0,2) + ' ' + v.slice(2);
-  else if(v.length > 4 && v.length <=7) v = v.slice(0,2) + ' ' + v.slice(2,4) + ' ' + v.slice(4);
-  else if(v.length > 7) v = v.slice(0,2) + ' ' + v.slice(2,4) + ' ' + v.slice(4,7);
-  regInput.value = v;
+/* ========= Validation & Book Now logic ========= */
+function allRequiredValid(){
+  // need at least one base in cart
+  const hasBase = cart.some(i=>i.type==='base');
+  // date time
+  const hasDate = !!serviceDate.value;
+  const hasTime = !!serviceTime.value;
+  const hasContact = custName.value.trim() && custPhone.value.trim() && custVehicle.value.trim() && custReg.value.trim();
+  return hasBase && hasDate && hasTime && hasContact;
+}
+function validateBookNow(){
+  const bar = bookNowBar;
+  if(allRequiredValid()){
+    bar.style.display='flex';
+    bookNowText.textContent = 'Book Now — Tap to send';
+    bar.onclick = () => { document.getElementById('previewWhatsApp').click(); };
+  } else {
+    bar.style.display='flex';
+    bookNowText.textContent = 'Complete details to enable booking';
+    bar.onclick = null;
+  }
+  // also show planBtn with total always (already updated)
+}
+/* show book bar initially but disabled */
+bookNowBar.style.display='flex';
+validateBookNow();
+
+/* attach input listeners to run validation & save */
+[serviceDate,serviceTime,custName,custPhone,custVehicle,custReg,custNotes].forEach(el=>{
+  el.addEventListener('input', ()=>{ validateBookNow(); saveState(); });
 });
 
-/* -------------------------
-   Emergency button (whatsapp prompt)
-   ------------------------- */
+/* UK reg formatting */
+custReg.addEventListener('input', ()=>{
+  let v = custReg.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(v.length>2 && v.length<=4) v = v.slice(0,2)+' '+v.slice(2);
+  else if(v.length>4 && v.length<=7) v = v.slice(0,2)+' '+v.slice(2,4)+' '+v.slice(4);
+  else if(v.length>7) v = v.slice(0,2)+' '+v.slice(2,4)+' '+v.slice(4,7);
+  custReg.value = v;
+  saveState();
+});
+
+/* emergency button (quick WA) */
 document.getElementById('emergencyBtn').addEventListener('click', ()=>{
-  // show a confirm modal? quick whatsapp
-  if(confirm('Contact SOS Mechanics for emergency assistance?')) {
+  if(confirm('Contact SOS Mechanics for emergency assistance?')){
     window.open('https://wa.me/447405937104?text=EMERGENCY%20SOS%20Mechanics','_blank');
   }
 });
 
-/* -------------------------
-   Initialize add-ons hidden until base selected
-   ------------------------- */
-addonsWrap.style.display = 'none';
-document.getElementById('step2').style.display='none';
-document.getElementById('step3').style.display='none';
-document.getElementById('step4').style.display='none';
-updateCartUI();
-
-/* -------------------------
-   Auto-open cart when items added (helper)
-   ------------------------- */
-function openCartBrief(){
-  cartOverlay.style.display = 'block';
-  setTimeout(()=>cartOverlay.style.display = 'none', 2500);
-}
-
-/* Hook updateCartUI to show cart briefly when changed */
-const originalUpdate = updateCartUI;
-updateCartUI = function(){
-  // run original
-  originalUpdate();
-  // open briefly
-  openCartBrief();
-};
-
-/* note: we reassign above; ensure it exists */
-updateCartUI();
-
-/* -------------------------
-   Populate add-ons UI into DOM (already created earlier)
-   ------------------------- */
-function populateAddonsToGrid(){
-  // featured
-  const fGrid = document.getElementById('featuredGrid');
-  featuredAddons.forEach(a=>{
-    const el = document.createElement('div'); el.className='service-card';
-    el.dataset.id = a.id;
-    el.innerHTML = `<h3>${a.name}</h3><div class="service-meta">£${a.price} — ${a.time} mins</div>`;
-    el.addEventListener('click', ()=> {
-      const exists = findInCart(a.id);
-      if(!exists){ cart.push({ id:a.id, name:a.name, price:a.price, type:'addon' }); el.style.outline='3px solid rgba(0,191,165,0.14)'; showToast(`${a.name} added`); }
-      else { removeFromCart(a.id); el.style.outline='none'; showToast(`${a.name} removed`); }
-      updateCartUI();
-    });
-    fGrid.appendChild(el);
-  });
-  // regular
-  const rGrid = document.getElementById('regularGrid');
-  regularAddons.forEach(a=>{
-    const el = document.createElement('div'); el.className='service-card';
-    el.dataset.id = a.id;
-    el.innerHTML = `<h3>${a.name}</h3><div class="service-meta">£${a.price} — ${a.time} mins</div>`;
-    el.addEventListener('click', ()=> {
-      const exists = findInCart(a.id);
-      if(!exists){ cart.push({ id:a.id, name:a.name, price:a.price, type:'addon' }); el.style.outline='3px solid rgba(0,191,165,0.14)'; showToast(`${a.name} added`); }
-      else { removeFromCart(a.id); el.style.outline='none'; showToast(`${a.name} removed`); }
-      updateCartUI();
-    });
-    rGrid.appendChild(el);
-  });
-}
-populateAddonsToGrid();
-
-/* Ensure base package price visible: set data-price attr */
-document.querySelectorAll('.service-card[data-id]').forEach(elem=>{
-  // nothing for now; base cards created earlier
+/* hint for phone field (smart validation) */
+custPhone.addEventListener('blur', ()=> {
+  const v = custPhone.value.replace(/\s+/g,'');
+  if(v && !/^0\d{9,12}$/.test(v) && !/^\+?44/.test(v)) showToast('Hint: UK mobile starts 07… or use +44',2500);
 });
 
-/* Final: prevent ticket from being visible until created */
-ticket.style.display='none';
+/* simple animation for plan total when updating */
+let lastTotal = 0;
+function animateTotal(newTotal){
+  const el = planBtn;
+  if(Number(newTotal) !== Number(lastTotal)){
+    el.animate([{transform:'scale(1)'},{transform:'scale(1.03)'},{transform:'scale(1)'}],{duration:350});
+  }
+  lastTotal = newTotal;
+}
+
+/* save & restore */
+restoreState();
+updateCartUI();
+validateBookNow();
+
+/* open cart briefly when items change */
+const origUpdate = updateCartUI;
+updateCartUI = function(){
+  origUpdate();
+  cartOverlay.style.display='block';
+  setTimeout(()=>{ cartOverlay.style.display='none'; }, 1800);
+};
+
+/* auto-restore selection visuals based on cart on load */
+function restoreVisualsFromCart(){
+  cart.forEach(it=>{
+    const el = document.querySelector(`[data-id="${it.id}"]`);
+    if(el) el.classList.add('selected');
+  });
+  if(cart.some(i=>i.type==='base')) addonsWrap.style.display='block';
+}
+restoreVisualsFromCart();
+
+/* animate plan total when updated via observer */
+const obs = new MutationObserver(()=>{ const t = parseFloat(cartTotalEl.textContent||0); animateTotal(t); });
+obs.observe(cartTotalEl, {childList:true,subtree:true});
+
+/* quick local save on unload */
+window.addEventListener('beforeunload', ()=> saveState());
+
+/* rebook suggestion after booking (not intrusive) */
+window.addEventListener('load', ()=>{
+  const last = localStorage.getItem('sos_last_booking');
+  if(last){
+    try{
+      const j = JSON.parse(last);
+      if(confirm(`Rebook the same as last time?\n${j.name} • ${j.vehicle} • ${j.date} • £${j.total}`)){
+        // prefill (simple)
+        custName.value = j.name; custVehicle.value = j.vehicle; custReg.value = j.reg || '';
+        saveState();
+        showToast('Prefilled with last booking');
+      }
+    }catch(e){}
+  }
+});
+
+/* Accessibility: allow Esc to close ticket */
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ if(ticket.style.display==='block'){ ticket.style.display='none'; resetAll(); } } });
 
 </script>
 </body>
