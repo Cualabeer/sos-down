@@ -3,263 +3,390 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOS Mechanics - Mobile Vehicle Services</title>
-<meta name="description" content="SOS Mechanics provides mobile vehicle services across Medway, Chatham, Rochester, Strood & Gillingham. Build your service plan, book, and get premium service.">
+<title>SOS Mechanics - Mobile Car Services Medway</title>
+<meta name="description" content="SOS Mechanics offers high-quality mobile car services in Medway, Chatham, Rochester, Strood & Gillingham. Build your service plan or request emergency assistance.">
 <meta name="robots" content="index, follow">
 <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
 <style>
 :root {
-  --brand-teal: #00bfa5;
-  --brand-dark: #004d40;
-  --brand-light: #e0f7fa;
-  --brand-highlight: #ff9800;
+  --brand-teal: #1abc9c;
+  --brand-aqua: #16a085;
+  --brand-highlight: #e67e22;
+  --bg-light: #f5f5f5;
+  --text-dark: #333;
 }
-body {margin:0;font-family:'Inter',sans-serif;background:#f0f4f5;color:#004d40;}
-header {background:var(--brand-teal);color:white;display:flex;justify-content:space-between;align-items:center;padding:10px 20px;position:relative;}
-header h1 {margin:0;font-size:1.5rem;}
-.navbar {position:absolute;top:100%;left:0;width:100%;background:white;display:none;flex-direction:column;box-shadow:0 4px 6px rgba(0,0,0,0.1);}
-.navbar a {padding:10px 20px;color:var(--brand-dark);text-decoration:none;border-bottom:1px solid #eee;}
-.navbar a:hover {background:var(--brand-light);}
-.nav-toggle {cursor:pointer;font-size:1.5rem;}
-.hero {text-align:center;padding:60px 20px;background:linear-gradient(135deg, var(--brand-teal), var(--brand-light));color:white;}
-.hero button {padding:15px 25px;margin:10px;font-size:1rem;border:none;border-radius:5px;cursor:pointer;background:var(--brand-highlight);color:white;font-weight:bold;transition:0.3s;}
-.hero button:hover {transform:scale(1.05);}
-.service-section {padding:40px 20px;text-align:center;}
-.service-section h2 {margin-bottom:20px;font-size:2rem;}
-.service-cards {display:flex;flex-wrap:wrap;justify-content:center;gap:20px;}
-.service-card {background:white;padding:20px;border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,0.1);width:250px;cursor:pointer;transition:0.3s;position:relative;}
-.service-card.selected {border:2px solid var(--brand-teal);}
-.service-card:hover {transform:translateY(-5px);box-shadow:0 6px 12px rgba(0,0,0,0.2);}
-.service-card h3 {margin:0 0 10px 0;}
-.service-card p {margin:5px 0;}
-#cartButton, #emergencyButton {position:fixed;bottom:20px;padding:15px 20px;border:none;border-radius:5px;color:white;font-weight:bold;cursor:pointer;z-index:999;}
-#cartButton {right:20px;background:var(--brand-teal);}
-#emergencyButton {left:20px;background:var(--brand-highlight);animation:flash 1.5s infinite;}
-@keyframes flash {0%,50%,100%{opacity:1;}25%,75%{opacity:0.5;}}
-#cartOverlay {position:fixed;bottom:70px;right:20px;width:300px;background:white;box-shadow:0 4px 12px rgba(0,0,0,0.2);border-radius:10px;padding:20px;display:none;max-height:70vh;overflow-y:auto;}
-#cartOverlay ul {list-style:none;padding:0;margin:0;}
-#cartOverlay li {display:flex;justify-content:space-between;margin-bottom:10px;}
-#cartOverlay button {background:red;color:white;border:none;border-radius:3px;padding:2px 6px;cursor:pointer;}
-#contactForm {padding:40px 20px;background:var(--brand-light);}
-#contactForm input, #contactForm textarea {width:100%;padding:10px;margin:10px 0;border-radius:5px;border:1px solid #ccc;}
-#contactForm button {background:var(--brand-teal);color:white;padding:15px 20px;border:none;border-radius:5px;font-weight:bold;cursor:pointer;}
-#serviceTicket {display:none;padding:20px;background:var(--brand-light);border-radius:10px;max-width:400px;margin:20px auto;position:relative;}
-#ticketQRCode {margin-top:10px;text-align:center;}
-footer {background:var(--brand-dark);color:white;padding:20px;text-align:center;}
-footer a {color:var(--brand-teal);text-decoration:none;}
-@media(max-width:768px){.service-cards{flex-direction:column;align-items:center;}}
+body {
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background: var(--bg-light);
+  color: var(--text-dark);
+}
+header {
+  background: var(--brand-teal);
+  color:white;
+  padding: 20px;
+  text-align:center;
+}
+.hero {
+  text-align:center;
+  padding:50px 20px;
+}
+.hero h1 {
+  font-size:2.5rem;
+  margin-bottom:15px;
+}
+.hero button {
+  padding:15px 30px;
+  font-size:1.2rem;
+  background: var(--brand-highlight);
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  transition:all 0.3s;
+}
+.hero button:hover {
+  transform:scale(1.05);
+}
+.services-section, .addons-section, .faq-section, .contact-section {
+  max-width:1200px;
+  margin: auto;
+  padding:40px 20px;
+}
+.section-title {
+  font-size:1.8rem;
+  margin-bottom:15px;
+  text-align:center;
+}
+.cards-container {
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+}
+.card {
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+.card h3 { margin-top:0; }
+.card p { margin:10px 0; }
+.card button {
+  margin-top:10px;
+  padding:10px 15px;
+  border:none;
+  border-radius:5px;
+  background: var(--brand-teal);
+  color:white;
+  cursor:pointer;
+}
+.addons-section .cards-container .card {
+  background: var(--brand-aqua);
+  color:white;
+}
+.cart-overlay {
+  position:fixed;
+  bottom:70px;
+  right:20px;
+  width:300px;
+  max-height:400px;
+  background:white;
+  border-radius:10px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.2);
+  overflow-y:auto;
+  display:none;
+  z-index:999;
+}
+.cart-overlay h3 {
+  text-align:center;
+  padding:10px;
+  margin:0;
+  border-bottom:1px solid #ddd;
+}
+.cart-items { padding:10px; }
+.cart-item { display:flex; justify-content:space-between; margin-bottom:8px; }
+.cart-item button {
+  background:red;
+  border:none;
+  border-radius:3px;
+  padding:2px 5px;
+  cursor:pointer;
+  color:white;
+}
+#cartButton, #emergencyButton {
+  position: fixed;
+  bottom: 10px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 999;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+#cartButton { right: 15px; background: var(--brand-teal); }
+#emergencyButton { left: 15px; background: var(--brand-highlight); animation: flash 1.5s infinite; }
+@keyframes flash {
+  0%,50%,100% { opacity:1; }
+  25%,75% { opacity:0.5; }
+}
+@media (max-width:480px){
+  .cards-container { grid-template-columns:1fr; }
+  #cartButton, #emergencyButton {
+    bottom:5px;
+    padding:10px 14px;
+    font-size:14px;
+  }
+  #cartButton { right:10px; }
+  #emergencyButton { left:10px; }
+}
+.contact-section input, .contact-section select, .contact-section textarea {
+  width:100%;
+  padding:10px;
+  margin:5px 0 15px 0;
+  border-radius:5px;
+  border:1px solid #ccc;
+}
+.contact-section button {
+  padding:12px 20px;
+  background: var(--brand-teal);
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+footer {
+  background:#222;
+  color:white;
+  padding:30px 20px;
+  text-align:center;
+}
+footer a { color:#1abc9c; text-decoration:none; margin:0 5px; }
+.ticket {
+  position:fixed;
+  top:20px;
+  right:20px;
+  width:320px;
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.2);
+  display:none;
+  z-index:1000;
+}
+.ticket h3 { margin-top:0; text-align:center; }
+.ticket button {
+  background: var(--brand-teal);
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:5px;
+  cursor:pointer;
+  margin-top:10px;
+}
 </style>
 </head>
 <body>
-
 <header>
   <h1>SOS Mechanics</h1>
-  <div class="nav-toggle" onclick="toggleNav()">☰</div>
-  <nav class="navbar">
-    <a href="#hero">Home</a>
-    <a href="#services">Services</a>
-    <a href="#contactForm">Contact</a>
-    <a href="#faq">FAQ</a>
-  </nav>
+  <p>Mobile Car Services - Medway, Chatham, Rochester, Strood & Gillingham</p>
 </header>
 
-<section class="hero" id="hero">
-  <h2>Mobile Vehicle Services in Medway</h2>
-  <p>Build your service plan and book instantly</p>
-  <button onclick="scrollToSection('serviceSection')">Build Service Plan</button>
+<section class="hero">
+  <h1>Fast, Reliable Mobile Car Repairs</h1>
+  <button id="buildPlanBtn">Build Your Service Plan</button>
 </section>
 
-<section class="service-section" id="serviceSection">
-  <h2>Select Base Service</h2>
-  <div class="service-cards" id="baseServices">
-    <div class="service-card" data-name="Brakes Service" data-price="145" data-time="60" onclick="selectBaseService(this)">
-      <h3>Brakes Service</h3>
-      <p>£145 - 1hr 0min</p>
-    </div>
-    <div class="service-card" data-name="Oil & Filter Basic" data-price="75" data-time="60" onclick="selectBaseService(this)">
-      <h3>Oil & Filter Basic</h3>
-      <p>£75 - 1hr 0min</p>
-    </div>
-    <div class="service-card" data-name="Oil & Filter Full" data-price="120" data-time="90" onclick="selectBaseService(this)">
-      <h3>Oil & Filter Full</h3>
-      <p>£120 - 1hr 30min</p>
-    </div>
-  </div>
-
-  <h2>Featured Add-ons</h2>
-  <div class="service-cards" id="addonServices">
-    <div class="service-card" data-name="Air Filter Replacement" data-price="30" data-time="15" onclick="addAddon(this)">
-      <h3>Air Filter Replacement</h3>
-      <p>£30 - 15min</p>
-    </div>
-    <div class="service-card" data-name="Brake Fluid Change" data-price="40" data-time="20" onclick="addAddon(this)">
-      <h3>Brake Fluid Change</h3>
-      <p>£40 - 20min</p>
-    </div>
-    <div class="service-card" data-name="Wheel Alignment" data-price="60" data-time="30" onclick="addAddon(this)">
-      <h3>Wheel Alignment</h3>
-      <p>£60 - 30min</p>
-    </div>
+<section class="services-section">
+  <div class="section-title">Base Service Packages</div>
+  <div class="cards-container" id="baseServices">
+    <!-- Base services dynamically populated -->
   </div>
 </section>
 
-<!-- Cart & Emergency Buttons -->
-<button id="emergencyButton">Emergency</button>
-<button id="cartButton" onclick="toggleCart()">My Service Plan</button>
-<div id="cartOverlay">
-  <h3>Your Service Plan</h3>
-  <ul id="cartItems"></ul>
-  <p>Total: <span id="cartTotal">£0</span></p>
-</div>
+<section class="addons-section">
+  <div class="section-title">Featured Add-Ons</div>
+  <div class="cards-container" id="featuredAddons">
+    <!-- Featured add-ons dynamically populated -->
+  </div>
+  <div class="section-title">Regular Add-Ons</div>
+  <div class="cards-container" id="regularAddons">
+    <!-- Regular add-ons dynamically populated -->
+  </div>
+</section>
 
-<!-- Contact Form -->
-<section id="contactForm">
-  <h2>Provide Your Details</h2>
-  <input type="text" id="name" placeholder="Full Name" required>
+<section class="contact-section" id="contactSection">
+  <div class="section-title">Your Details & Vehicle</div>
+  <input type="text" id="customerName" placeholder="Full Name" required>
+  <input type="text" id="numberPlate" placeholder="Car Number Plate" required>
   <input type="text" id="phone" placeholder="Phone Number" required>
-  <input type="text" id="vehicle" placeholder="Vehicle Registration" required>
-  <input type="datetime-local" id="datetime" required>
-  <textarea id="notes" placeholder="Notes / Location"></textarea>
-  <button id="sendWhatsApp">Submit Booking</button>
+  <input type="text" id="vehicle" placeholder="Vehicle Model" required>
+  <input type="datetime-local" id="serviceDateTime" required>
+  <textarea id="notes" placeholder="Additional Notes"></textarea>
+  <button id="submitBooking">Submit & Send to WhatsApp</button>
 </section>
 
-<!-- Ticket -->
-<div id="serviceTicket">
-  <h2 id="ticketName"></h2>
-  <div id="ticketPlate"></div>
-  <ul id="ticketItems"></ul>
-  <p id="ticketTotal"></p>
-  <div id="ticketQRCode"></div>
-  <button id="downloadTicket">Download</button>
-  <button onclick="window.print()">Print</button>
+<div class="cart-overlay" id="cartOverlay">
+  <h3>My Service Plan</h3>
+  <div class="cart-items" id="cartItems"></div>
 </div>
 
-<!-- Footer -->
+<button id="cartButton">My Service Plan</button>
+<button id="emergencyButton">Emergency</button>
+
+<div class="ticket" id="ticket">
+  <h3>Service Booking</h3>
+  <div id="ticketContent"></div>
+  <button id="downloadTicket">Download / Print</button>
+</div>
+
 <footer>
-  <p>&copy; <span id="year"></span> SOS Mechanics | <a href="tel:07405937104">Call +44 7405 937104</a> | Servicing Medway, Chatham, Rochester, Strood & Gillingham</p>
+  &copy; <span id="currentYear"></span> SOS Mechanics | <a href="tel:07405937104">Call +44 7405 937104</a> | Servicing Medway, Chatham, Rochester, Strood & Gillingham
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <script>
-document.getElementById('year').textContent = new Date().getFullYear();
+document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+// Example base services
+const baseServices = [
+  {name:'Brake Service', desc:'Full brake inspection and replacement', price:120, time:60},
+  {name:'Oil & Filter', desc:'Basic oil change with filter', price:60, time:60},
+  {name:'Full Vehicle Service', desc:'Comprehensive service package', price:250, time:120}
+];
+
+// Example add-ons
+const featuredAddons = [
+  {name:'Aircon Service', price:50, time:30},
+  {name:'Tyre Check & Rotation', price:40, time:25},
+  {name:'Battery Check & Replacement', price:60, time:25},
+  {name:'Brake Fluid Change', price:35, time:25}
+];
+const regularAddons = [
+  {name:'Wiper Replacement', price:15, time:15},
+  {name:'Headlight Bulbs', price:25, time:20},
+  {name:'Wheel Alignment', price:45, time:30},
+  {name:'Clutch Check', price:50, time:30},
+  {name:'Exhaust Check', price:40, time:25},
+  {name:'Coolant Top-Up', price:20, time:15},
+  {name:'Air Filter', price:15, time:15},
+  {name:'Cabin Filter', price:15, time:15},
+  {name:'Spark Plugs', price:35, time:20},
+  {name:'Fuel Filter', price:30, time:25},
+  {name:'Transmission Fluid', price:50, time:30}
+];
 
 let cart = [];
-let selectedBase = null;
 
-function toggleNav(){document.querySelector('.navbar').style.display = document.querySelector('.navbar').style.display==='flex'?'none':'flex';}
+// Populate base services
+const baseContainer = document.getElementById('baseServices');
+baseServices.forEach((service,index)=>{
+  const card = document.createElement('div');
+  card.className='card';
+  card.innerHTML=`<h3>${service.name}</h3><p>${service.desc}</p><p>Price: £${service.price}</p><p>Time: ${service.time} mins</p>`;
+  const btn = document.createElement('button');
+  btn.textContent='Add to Service Plan';
+  btn.onclick=()=>{cart=[service]; updateCart(); alert(service.name+' added to service plan'); scrollToCart();}
+  card.appendChild(btn);
+  baseContainer.appendChild(card);
+});
 
-function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
-
-function selectBaseService(card){
-  if(selectedBase && selectedBase!==card){
-    selectedBase.classList.remove('selected');
-    cart = cart.filter(item=>item.type!=='base');
-  }
-  if(card.classList.contains('selected')){
-    card.classList.remove('selected');
-    selectedBase=null;
-    cart=cart.filter(item=>item.type!=='base');
-  } else {
-    card.classList.add('selected');
-    selectedBase=card;
-    cart.push({type:'base',name:card.dataset.name,price:parseFloat(card.dataset.price),time:parseInt(card.dataset.time)});
-  }
-  updateCart();
-  showMessage(`${card.dataset.name} added to service plan`);
+// Populate add-ons
+function populateAddons(container,addons){
+  const parent=document.getElementById(container);
+  addons.forEach(addon=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<h3>${addon.name}</h3><p>Price: £${addon.price}</p><p>Time: ${addon.time} mins</p>`;
+    const btn=document.createElement('button');
+    btn.textContent='Add to Service Plan';
+    btn.onclick=()=>{
+      cart.push(addon);
+      updateCart();
+      alert(addon.name+' added to service plan');
+      scrollToCart();
+    };
+    card.appendChild(btn);
+    parent.appendChild(card);
+  });
 }
-
-function addAddon(card){
-  const exists=cart.find(item=>item.name===card.dataset.name);
-  if(!exists){
-    cart.push({type:'addon',name:card.dataset.name,price:parseFloat(card.dataset.price),time:parseInt(card.dataset.time)});
-    card.classList.add('selected');
-    showMessage(`${card.dataset.name} added to service plan`);
-  } else {
-    cart=cart.filter(item=>item.name!==card.dataset.name);
-    card.classList.remove('selected');
-    showMessage(`${card.dataset.name} removed from service plan`);
-  }
-  updateCart();
-}
+populateAddons('featuredAddons',featuredAddons);
+populateAddons('regularAddons',regularAddons);
 
 function updateCart(){
-  const ul=document.getElementById('cartItems');
-  ul.innerHTML='';
+  const itemsDiv=document.getElementById('cartItems');
+  itemsDiv.innerHTML='';
   let total=0;
-  cart.forEach(item=>{
-    const li=document.createElement('li');
-    li.textContent=`${item.name} - £${item.price}`;
-    ul.appendChild(li);
+  cart.forEach((item,i)=>{
+    const div=document.createElement('div');
+    div.className='cart-item';
+    div.innerHTML=`${item.name} (£${item.price}) <button onclick="removeItem(${i})">X</button>`;
+    itemsDiv.appendChild(div);
     total+=item.price;
   });
-  document.getElementById('cartTotal').textContent=`£${total}`;
-  document.getElementById('cartButton').textContent=cart.length?`My Service Plan - £${total}`:'My Service Plan';
+  const totalDiv=document.createElement('div');
+  totalDiv.style.fontWeight='bold';
+  totalDiv.style.paddingTop='10px';
+  totalDiv.textContent=`Total: £${total}`;
+  itemsDiv.appendChild(totalDiv);
 }
 
-function toggleCart(){
+function removeItem(index){
+  cart.splice(index,1);
+  updateCart();
+  alert('Item removed from service plan');
+}
+
+function scrollToCart(){
+  document.getElementById('cartOverlay').style.display='block';
+  document.getElementById('cartOverlay').scrollTop=0;
+}
+
+document.getElementById('cartButton').onclick=()=>{ 
   const overlay=document.getElementById('cartOverlay');
-  overlay.style.display=overlay.style.display==='block'?'none':'block';
-}
+  overlay.style.display=(overlay.style.display==='block')?'none':'block';
+};
 
-function showMessage(msg){
-  const message=document.createElement('div');
-  message.textContent=msg;
-  message.style.position='fixed';
-  message.style.bottom='120px';
-  message.style.right='20px';
-  message.style.background='var(--brand-teal)';
-  message.style.color='white';
-  message.style.padding='10px 20px';
-  message.style.borderRadius='5px';
-  message.style.zIndex='1000';
-  document.body.appendChild(message);
-  setTimeout(()=>document.body.removeChild(message),2000);
-}
+document.getElementById('emergencyButton').onclick=()=>{ window.location.href='tel:07405937104'; };
 
-document.getElementById('sendWhatsApp').addEventListener('click',()=>{
-  const name=document.getElementById('name').value.trim();
+document.getElementById('submitBooking').onclick=()=>{
+  const name=document.getElementById('customerName').value.trim();
   const phone=document.getElementById('phone').value.trim();
-  const vehicle=document.getElementById('vehicle').value.trim().toUpperCase().replace(/\s+/g,'');
-  const datetime=document.getElementById('datetime').value;
+  const vehicle=document.getElementById('vehicle').value.trim();
+  const numberPlate=document.getElementById('numberPlate').value.trim();
+  const datetime=document.getElementById('serviceDateTime').value;
   const notes=document.getElementById('notes').value.trim();
-  if(!name||!phone||!vehicle||!datetime||cart.length===0){alert('Please complete all fields and select a service plan'); return;}
-  const items=cart.map(i=>`${i.name} (£${i.price})`).join(', ');
-  const total=cart.reduce((sum,i)=>sum+i.price,0);
-  const message=`SOS Mechanics Booking:\nName: ${name}\nPhone: ${phone}\nVehicle: ${vehicle}\nItems: ${items}\nDate/Time: ${datetime}\nTotal: £${total}\nNotes: ${notes}`;
-  const url=`https://wa.me/447405937104?text=${encodeURIComponent(message)}`;
-  window.open(url,'_blank');
-  generateTicket(name,vehicle,cart,total,datetime);
-});
-
-function generateTicket(name,vehicle,cart,total,datetime){
-  const ticket=document.getElementById('serviceTicket');
-  document.getElementById('ticketName').textContent=name;
-  document.getElementById('ticketPlate').textContent=vehicle;
-  const itemsUl=document.getElementById('ticketItems');
-  itemsUl.innerHTML='';
-  cart.forEach(i=>{
-    const li=document.createElement('li');
-    li.textContent=`${i.name} - £${i.price} (${i.time}min)`;
-    itemsUl.appendChild(li);
+  if(!name||!phone||!vehicle||!numberPlate||!datetime){alert('Please fill all required fields'); return;}
+  let msg=`SOS Mechanics Booking:\nName: ${name}\nPhone: ${phone}\nVehicle: ${vehicle}\nNumber Plate: ${numberPlate}\nDate/Time: ${datetime}\nNotes: ${notes}\nServices:\n`;
+  cart.forEach(item=>{ msg+=`${item.name} - £${item.price}\n`; });
+  msg+=`Total: £${cart.reduce((a,b)=>a+b.price,0)}`;
+  window.open(`https://wa.me/447405937104?text=${encodeURIComponent(msg)}`,'_blank');
+  // Show ticket
+  const ticket=document.getElementById('ticket');
+  document.getElementById('ticketContent').innerHTML=`<p>Name: ${name}</p><p>Vehicle: ${vehicle}</p><p>Number Plate: ${numberPlate}</p><p>Date/Time: ${datetime}</p><p>Services:</p><ul>${cart.map(i=>`<li>${i.name} - £${i.price}</li>`).join('')}</ul><p>Total: £${cart.reduce((a,b)=>a+b.price,0)}</p>`;
+  QRCode.toCanvas(document.createElement('canvas'),JSON.stringify({name,vehicle,numberPlate,total:cart.reduce((a,b)=>a+b.price,0)}),{width:128},function(err,canvas){
+    if(!err){ document.getElementById('ticketContent').appendChild(canvas);}
   });
-  document.getElementById('ticketTotal').textContent=`Total: £${total} | Date/Time: ${datetime}`;
   ticket.style.display='block';
-  // QR code
-  const qrData=`SOS Mechanics Booking:\nName: ${name}\nVehicle: ${vehicle}\nItems: ${cart.map(i=>i.name).join(', ')}\nDate/Time: ${datetime}\nTotal: £${total}`;
-  QRCode.toCanvas(document.getElementById('ticketQRCode'),qrData,{width:150},function(err){if(err)console.error(err);});
-}
+};
 
-document.getElementById('downloadTicket').addEventListener('click',()=>{
-  const ticket=document.getElementById('serviceTicket');
+// Ticket download
+document.getElementById('downloadTicket').onclick=()=>{
+  const ticket=document.getElementById('ticketContent');
   html2canvas(ticket).then(canvas=>{
     const link=document.createElement('a');
-    link.download='SOS_Mechanics_Booking.png';
     link.href=canvas.toDataURL();
+    link.download='service_booking.png';
     link.click();
   });
-});
+};
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </body>
 </html>
