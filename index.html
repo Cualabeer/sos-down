@@ -205,20 +205,14 @@ footer a { color:#1abc9c; text-decoration:none; margin:0 5px; }
 
 <section class="services-section">
   <div class="section-title">Base Service Packages</div>
-  <div class="cards-container" id="baseServices">
-    <!-- Base services dynamically populated -->
-  </div>
+  <div class="cards-container" id="baseServices"></div>
 </section>
 
 <section class="addons-section">
   <div class="section-title">Featured Add-Ons</div>
-  <div class="cards-container" id="featuredAddons">
-    <!-- Featured add-ons dynamically populated -->
-  </div>
+  <div class="cards-container" id="featuredAddons"></div>
   <div class="section-title">Regular Add-Ons</div>
-  <div class="cards-container" id="regularAddons">
-    <!-- Regular add-ons dynamically populated -->
-  </div>
+  <div class="cards-container" id="regularAddons"></div>
 </section>
 
 <section class="contact-section" id="contactSection">
@@ -251,17 +245,17 @@ footer a { color:#1abc9c; text-decoration:none; margin:0 5px; }
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
+// Dynamic year
 document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-// Example base services
+// Base services
 const baseServices = [
   {name:'Brake Service', desc:'Full brake inspection and replacement', price:120, time:60},
   {name:'Oil & Filter', desc:'Basic oil change with filter', price:60, time:60},
   {name:'Full Vehicle Service', desc:'Comprehensive service package', price:250, time:120}
 ];
-
-// Example add-ons
 const featuredAddons = [
   {name:'Aircon Service', price:50, time:30},
   {name:'Tyre Check & Rotation', price:40, time:25},
@@ -281,43 +275,30 @@ const regularAddons = [
   {name:'Fuel Filter', price:30, time:25},
   {name:'Transmission Fluid', price:50, time:30}
 ];
-
 let cart = [];
 
-// Populate base services
-const baseContainer = document.getElementById('baseServices');
-baseServices.forEach((service,index)=>{
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML=`<h3>${service.name}</h3><p>${service.desc}</p><p>Price: £${service.price}</p><p>Time: ${service.time} mins</p>`;
-  const btn = document.createElement('button');
-  btn.textContent='Add to Service Plan';
-  btn.onclick=()=>{cart=[service]; updateCart(); alert(service.name+' added to service plan'); scrollToCart();}
-  card.appendChild(btn);
-  baseContainer.appendChild(card);
-});
-
-// Populate add-ons
-function populateAddons(container,addons){
+// Populate services
+function populateCards(container,data){
   const parent=document.getElementById(container);
-  addons.forEach(addon=>{
+  data.forEach((item,index)=>{
     const card=document.createElement('div');
     card.className='card';
-    card.innerHTML=`<h3>${addon.name}</h3><p>Price: £${addon.price}</p><p>Time: ${addon.time} mins</p>`;
+    card.innerHTML=`<h3>${item.name}</h3><p>${item.desc||''}</p><p>Price: £${item.price}</p><p>Time: ${item.time} mins</p>`;
     const btn=document.createElement('button');
     btn.textContent='Add to Service Plan';
     btn.onclick=()=>{
-      cart.push(addon);
+      if(container==='baseServices'){ cart=[item]; } else { cart.push(item); }
       updateCart();
-      alert(addon.name+' added to service plan');
+      alert(item.name+' added to service plan');
       scrollToCart();
     };
     card.appendChild(btn);
     parent.appendChild(card);
   });
 }
-populateAddons('featuredAddons',featuredAddons);
-populateAddons('regularAddons',regularAddons);
+populateCards('baseServices',baseServices);
+populateCards('featuredAddons',featuredAddons);
+populateCards('regularAddons',regularAddons);
 
 function updateCart(){
   const itemsDiv=document.getElementById('cartItems');
@@ -344,16 +325,30 @@ function removeItem(index){
 }
 
 function scrollToCart(){
-  document.getElementById('cartOverlay').style.display='block';
-  document.getElementById('cartOverlay').scrollTop=0;
+  const overlay=document.getElementById('cartOverlay');
+  overlay.style.display='block';
+  overlay.scrollTop=0;
 }
 
 document.getElementById('cartButton').onclick=()=>{ 
   const overlay=document.getElementById('cartOverlay');
   overlay.style.display=(overlay.style.display==='block')?'none':'block';
 };
-
 document.getElementById('emergencyButton').onclick=()=>{ window.location.href='tel:07405937104'; };
+
+// UK number plate formatting
+const numberPlateInput = document.getElementById('numberPlate');
+numberPlateInput.addEventListener('input', () => {
+  let value = numberPlateInput.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(value.length > 2 && value.length <= 4){
+    value = value.slice(0,2) + ' ' + value.slice(2);
+  } else if(value.length > 4 && value.length <= 7){
+    value = value.slice(0,2) + ' ' + value.slice(2,4) + ' ' + value.slice(4);
+  } else if(value.length > 7){
+    value = value.slice(0,2) + ' ' + value.slice(2,4) + ' ' + value.slice(4,7);
+  }
+  numberPlateInput.value = value;
+});
 
 document.getElementById('submitBooking').onclick=()=>{
   const name=document.getElementById('customerName').value.trim();
@@ -367,9 +362,10 @@ document.getElementById('submitBooking').onclick=()=>{
   cart.forEach(item=>{ msg+=`${item.name} - £${item.price}\n`; });
   msg+=`Total: £${cart.reduce((a,b)=>a+b.price,0)}`;
   window.open(`https://wa.me/447405937104?text=${encodeURIComponent(msg)}`,'_blank');
-  // Show ticket
+  
   const ticket=document.getElementById('ticket');
   document.getElementById('ticketContent').innerHTML=`<p>Name: ${name}</p><p>Vehicle: ${vehicle}</p><p>Number Plate: ${numberPlate}</p><p>Date/Time: ${datetime}</p><p>Services:</p><ul>${cart.map(i=>`<li>${i.name} - £${i.price}</li>`).join('')}</ul><p>Total: £${cart.reduce((a,b)=>a+b.price,0)}</p>`;
+  
   QRCode.toCanvas(document.createElement('canvas'),JSON.stringify({name,vehicle,numberPlate,total:cart.reduce((a,b)=>a+b.price,0)}),{width:128},function(err,canvas){
     if(!err){ document.getElementById('ticketContent').appendChild(canvas);}
   });
@@ -387,6 +383,5 @@ document.getElementById('downloadTicket').onclick=()=>{
   });
 };
 </script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </body>
 </html>
